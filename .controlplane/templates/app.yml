@@ -14,6 +14,8 @@ spec:
       value: "0.0.0.0"
     - name: RENDERER_PORT
       value: "3800"
+    - name: RENDERER_WORKERS_COUNT
+      value: "1"
     - name: RENDERER_SERVER_BUNDLE_CACHE_PATH
       value: /rails/tmp/.node-renderer-bundles
     - name: SOLID_QUEUE_IN_PUMA
