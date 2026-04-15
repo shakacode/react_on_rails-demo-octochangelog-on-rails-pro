@@ -97,7 +97,7 @@ development:
     # For running dev server with https, set `server: https`.
     # server: https
 
-    host: localhost
+    host: 127.0.0.1
     port: 3035
     # Hot Module Replacement updates modules while the application is running without a full reload
     # Used instead of the `hot` key in https://webpack.js.org/configuration/dev-server/#devserverhot
@@ -115,15 +115,16 @@ development:
     client:
       # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
       overlay: true
-      # May also be a string
-      # webSocketURL:
-      #  hostname: '0.0.0.0'
-      #  pathname: '/ws'
-      #  port: 8080
+      webSocketURL:
+        hostname: 127.0.0.1
+        port: 3035
     # Should we use gzip compression?
     compress: true
     # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
-    allowed_hosts: 'auto'
+    allowed_hosts:
+      - 127.0.0.1
+      - localhost
+      - "[::1]"
     # Shows progress and colorizes output of bin/shakapacker[-dev-server]
     pretty: true
     headers:

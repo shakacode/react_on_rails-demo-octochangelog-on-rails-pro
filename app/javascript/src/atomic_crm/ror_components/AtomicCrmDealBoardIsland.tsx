@@ -6,6 +6,7 @@ type Deal = {
   id: number;
   name: string;
   owner: string;
+  companyName: string;
   amount: string;
 };
 
@@ -60,6 +61,7 @@ export default function AtomicCrmDealBoardIsland({ stages }: Props) {
                 <span>{deal.owner}</span>
                 <span>{deal.amount}</span>
               </div>
+              <p className="crm-deal-card__company">{deal.companyName}</p>
               <button
                 type="button"
                 disabled={stageIndex === board.length - 1}

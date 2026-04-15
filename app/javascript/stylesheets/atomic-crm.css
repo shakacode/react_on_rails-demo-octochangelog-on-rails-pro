@@ -24,6 +24,10 @@ body {
     linear-gradient(180deg, #f7f2e9 0%, #eee6da 100%);
 }
 
+.crm-app {
+  padding-bottom: 56px;
+}
+
 .crm-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -37,10 +41,121 @@ body {
 
 .crm-hero,
 .crm-card,
+.crm-nav,
 .crm-board,
 .crm-board__column {
   border: 1px solid var(--crm-line);
   box-shadow: var(--crm-shadow);
+}
+
+.crm-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto auto;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  border-radius: 24px;
+  background: rgba(255, 251, 246, 0.7);
+  backdrop-filter: blur(14px);
+}
+
+.crm-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.crm-nav__brand strong,
+.crm-page__intro h1,
+.crm-contact-hero h1 {
+  display: block;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.crm-nav__brand span {
+  display: block;
+}
+
+.crm-nav__brand > div > span,
+.crm-nav__meta span,
+.crm-page__intro p,
+.crm-stat-card p,
+.crm-contact-hero__meta,
+.crm-company-rollup__item p,
+.crm-page__back {
+  color: var(--crm-muted);
+}
+
+.crm-nav__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--crm-teal), #1c4250);
+  color: #fffaf3;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.crm-nav__links,
+.crm-nav__meta,
+.crm-hero__actions,
+.crm-contact-hero__meta,
+.crm-directory__detail,
+.crm-company-rollup__stats,
+.crm-deal-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.crm-nav__link,
+.crm-button-link,
+.crm-text-link,
+.crm-page__back {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.crm-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: var(--crm-muted);
+  text-decoration: none;
+}
+
+.crm-nav__link--active {
+  background: rgba(21, 79, 89, 0.12);
+  color: var(--crm-teal);
+  font-weight: 700;
+}
+
+.crm-nav__meta {
+  justify-content: flex-end;
+  font-size: 0.86rem;
+}
+
+.crm-nav__meta span,
+.crm-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(23, 34, 43, 0.06);
 }
 
 .crm-hero {
@@ -64,7 +179,11 @@ body {
 .crm-hero h1 {
   font-size: clamp(2.4rem, 5vw, 4.4rem);
   line-height: 0.94;
-  max-width: 10ch;
+  max-width: 12ch;
+}
+
+.crm-hero__actions {
+  margin-top: 24px;
 }
 
 .crm-shell__eyebrow {
@@ -77,6 +196,139 @@ body {
   opacity: 0.78;
 }
 
+.crm-button-link,
+.crm-text-link,
+.crm-page__back {
+  color: inherit;
+  text-decoration: none;
+}
+
+.crm-button-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 248, 241, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 248, 241, 0.12);
+  color: #fffaf3;
+  font-weight: 700;
+}
+
+.crm-button-link--muted {
+  background: transparent;
+}
+
+.crm-text-link {
+  color: var(--crm-teal);
+}
+
+.crm-page {
+  display: grid;
+  gap: 18px;
+}
+
+.crm-page__intro {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.crm-page__intro h1,
+.crm-contact-hero h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.96;
+}
+
+.crm-page__back {
+  display: inline-flex;
+  width: fit-content;
+}
+
+.crm-stat-grid,
+.crm-detail-grid,
+.crm-directory-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.crm-stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.crm-stat-card p {
+  margin: 8px 0 0;
+}
+
+.crm-directory-layout {
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  align-items: start;
+}
+
+.crm-page__aside {
+  display: grid;
+  gap: 16px;
+}
+
+.crm-directory,
+.crm-company-rollup {
+  display: grid;
+}
+
+.crm-directory__row,
+.crm-company-rollup__item {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--crm-line);
+}
+
+.crm-directory__row:first-child,
+.crm-company-rollup__item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.crm-directory__row {
+  color: inherit;
+  text-decoration: none;
+}
+
+.crm-directory__identity,
+.crm-contact-hero__heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.crm-directory__identity p,
+.crm-contact-hero p,
+.crm-company-rollup__item p {
+  margin: 6px 0 0;
+}
+
+.crm-directory__detail,
+.crm-directory__meta,
+.crm-contact-hero__meta,
+.crm-company-rollup__stats {
+  font-size: 0.92rem;
+}
+
+.crm-contact-hero {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.crm-detail-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.crm-panel--wide {
+  grid-column: 1 / -1;
+}
+
 .crm-hero p,
 .crm-card p,
 .crm-shell__section-header p {
@@ -84,12 +336,13 @@ body {
 }
 
 .crm-metrics,
-.crm-next-steps {
+.crm-stage-summary {
   display: grid;
   gap: 14px;
 }
 
-.crm-metrics {
+.crm-metrics,
+.crm-stage-summary {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -113,6 +366,96 @@ body {
   justify-content: space-between;
   gap: 20px;
   margin: 0 0 18px;
+}
+
+.crm-stage-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 20px;
+}
+
+.crm-card--summary p {
+  margin: 8px 0 0;
+  color: var(--crm-muted);
+}
+
+.crm-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.crm-panel__header {
+  margin-bottom: 14px;
+}
+
+.crm-list,
+.crm-notes {
+  display: grid;
+  gap: 12px;
+}
+
+.crm-list__item,
+.crm-note {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+  border-top: 1px solid var(--crm-line);
+}
+
+.crm-list__item:first-child,
+.crm-note:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.crm-list__item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.crm-list__item p,
+.crm-note p {
+  margin: 0;
+  color: var(--crm-muted);
+}
+
+.crm-list__item span,
+.crm-note__meta span {
+  color: var(--crm-muted);
+  font-size: 0.86rem;
+}
+
+.crm-pill {
+  width: fit-content;
+  margin-bottom: 0;
+  color: var(--crm-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.crm-pill--hot,
+.crm-pill--high {
+  background: rgba(214, 124, 77, 0.18);
+  color: #9a4b23;
+}
+
+.crm-pill--warm,
+.crm-pill--medium,
+.crm-pill--deal {
+  background: rgba(21, 79, 89, 0.12);
+  color: var(--crm-teal);
+}
+
+.crm-pill--low {
+  background: rgba(23, 34, 43, 0.08);
+  color: var(--crm-muted);
+}
+
+.crm-note__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .crm-board {
@@ -168,6 +511,11 @@ body {
   margin: 0;
 }
 
+.crm-deal-card__company {
+  color: var(--crm-muted);
+  font-size: 0.9rem;
+}
+
 .crm-deal-card__meta {
   display: flex;
   justify-content: space-between;
@@ -192,8 +540,23 @@ body {
 }
 
 @media (max-width: 960px) {
+  .crm-nav,
   .crm-hero,
+  .crm-stat-grid,
+  .crm-directory-layout,
+  .crm-detail-grid,
+  .crm-stage-summary,
+  .crm-dashboard-grid,
   .crm-board {
     grid-template-columns: 1fr;
+  }
+
+  .crm-nav__meta {
+    justify-content: flex-start;
+  }
+
+  .crm-directory__identity,
+  .crm-contact-hero__heading {
+    flex-direction: column;
   }
 }
