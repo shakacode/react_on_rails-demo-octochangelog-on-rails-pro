@@ -1,0 +1,10 @@
+<%= stream_react_component("AtomicCrmHomePage", props: @dashboard_props) %>
+
+<section class="crm-shell crm-shell--board">
+  <div class="crm-shell__section-header">
+    <p class="crm-shell__eyebrow">Client Island</p>
+    <h2>Deal pipeline stays interactive without forcing the whole app into a client SPA.</h2>
+  </div>
+
+  <%= react_component("AtomicCrmDealBoardIsland", props: @deal_board_props, prerender: false) %>
+</section>

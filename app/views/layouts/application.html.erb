@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Atomic CRM on Rails Pro" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_pack_tag "application" %>
+    <%= stylesheet_pack_tag %>
+    <%= javascript_pack_tag %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

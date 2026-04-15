@@ -1,0 +1,5 @@
+web: bin/rails server -p ${PORT:-3000}
+js: CLIENT_BUNDLE_ONLY=true bin/shakapacker-watch --watch
+server-bundle: SERVER_BUNDLE_ONLY=true bin/shakapacker-watch --watch
+node-renderer: RENDERER_LOG_LEVEL=debug RENDERER_PORT=3800 node client/node-renderer.js
+rsc-bundle: RSC_BUNDLE_ONLY=true bin/shakapacker-watch --watch
