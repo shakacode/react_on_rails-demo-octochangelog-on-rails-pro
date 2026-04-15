@@ -1,0 +1,36 @@
+kind: gvc
+name: {{APP_NAME}}
+spec:
+  env:
+    - name: RAILS_ENV
+      value: production
+    - name: RAILS_LOG_LEVEL
+      value: info
+    - name: RAILS_SERVE_STATIC_FILES
+      value: "true"
+    - name: REACT_RENDERER_URL
+      value: http://renderer.{{APP_NAME}}.cpln.local:3800
+    - name: RENDERER_HOST
+      value: "0.0.0.0"
+    - name: RENDERER_PORT
+      value: "3800"
+    - name: RENDERER_SERVER_BUNDLE_CACHE_PATH
+      value: /rails/tmp/.node-renderer-bundles
+    - name: SOLID_QUEUE_IN_PUMA
+      value: "true"
+    # Required runtime secret:
+    # - name: RAILS_MASTER_KEY
+    #   value: cpln://secret/octochangelog-on-rails-pro-secrets/RAILS_MASTER_KEY
+    #
+    # Optional but recommended renderer secret:
+    # - name: RENDERER_PASSWORD
+    #   value: cpln://secret/octochangelog-on-rails-pro-secrets/RENDERER_PASSWORD
+    #
+    # Optional GitHub OAuth:
+    # - name: GITHUB_CLIENT_ID
+    #   value: cpln://secret/octochangelog-on-rails-pro-secrets/GITHUB_CLIENT_ID
+    # - name: GITHUB_CLIENT_SECRET
+    #   value: cpln://secret/octochangelog-on-rails-pro-secrets/GITHUB_CLIENT_SECRET
+  staticPlacement:
+    locationLinks:
+      - {{APP_LOCATION_LINK}}

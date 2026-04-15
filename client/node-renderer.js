@@ -6,7 +6,10 @@ const configuredWorkersCount =
   parseWorkersCount(env.RENDERER_WORKERS_COUNT) ?? parseWorkersCount(env.NODE_RENDERER_CONCURRENCY);
 
 const config = {
-  serverBundleCachePath: path.resolve(__dirname, '../.node-renderer-bundles'),
+  serverBundleCachePath:
+    env.RENDERER_SERVER_BUNDLE_CACHE_PATH || path.resolve(__dirname, '../tmp/.node-renderer-bundles'),
+  // Containerized deploys need the renderer reachable from the Rails workload.
+  host: env.RENDERER_HOST || (env.RAILS_ENV === 'production' ? '0.0.0.0' : 'localhost'),
   port: Number(env.RENDERER_PORT) || 3800,
   logLevel: env.RENDERER_LOG_LEVEL || 'info',
 

@@ -1,0 +1,54 @@
+# Keys beginning with "cpln_" correspond to your settings in Control Plane.
+#
+# This demo uses the repository root Dockerfile and mounts `/rails/storage`
+# so SQLite, Solid Cache, Solid Queue, Action Cable, and Thruster state persist.
+
+allow_org_override_by_env: true
+allow_app_override_by_env: true
+
+aliases:
+  common: &common
+    cpln_org: my-org-staging
+    default_location: aws-us-east-2
+
+    setup_app_templates:
+      - app
+      - storage
+      - rails
+      - renderer
+
+    # Runtime secrets such as RAILS_MASTER_KEY are expected to be configured
+    # directly in Control Plane after the app exists.
+    skip_secrets_setup: true
+
+    one_off_workload: rails
+    app_workloads:
+      - rails
+      - renderer
+
+    # Use the repo's real production Dockerfile rather than a second copy in .controlplane/.
+    dockerfile: ../Dockerfile
+
+    # The generated review/staging/production workflows will run this when present.
+    release_script: release_script.sh
+
+    stale_app_image_deployed_days: 5
+    image_retention_days: 7
+
+  production: &production
+    <<: *common
+    allow_org_override_by_env: false
+    allow_app_override_by_env: false
+    cpln_org: my-org-production
+    upstream: octochangelog-on-rails-pro-staging
+
+apps:
+  octochangelog-on-rails-pro-staging:
+    <<: *common
+
+  octochangelog-on-rails-pro-review:
+    <<: *common
+    match_if_app_name_starts_with: true
+
+  octochangelog-on-rails-pro-production:
+    <<: *production
