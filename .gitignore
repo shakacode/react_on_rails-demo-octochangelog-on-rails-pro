@@ -45,3 +45,5 @@ yarn-debug.log*
 **/generated/**
 ssr-generated
 .env
+.node-renderer-bundles/
+.playwright-cli/

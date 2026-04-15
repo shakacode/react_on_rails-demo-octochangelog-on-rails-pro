@@ -69,3 +69,9 @@ The useful comparison is:
 - When the page has expensive server/client composition, is RSC a better fit than a larger client-rendered surface?
 
 This repo argues that the answer can be yes on the right surface.
+
+## How This Repo Fits With Other ShakaCode RSC Repos
+
+- `gumroad-rsc` helps answer whether selected surfaces inside a larger existing product could justify a deeper React on Rails Pro proposal.
+- `react_on_rails-hacker-news-app` helps show that Rails + RSC can support a fuller multi-route content app with nested server-rendered trees.
+- This repo helps answer a narrower showcase question: if the prospect wants one fast, legible proof point for Rails-owned routing plus a thin client island plus heavy server rendering, this is the best starting repo.
