@@ -1,0 +1,31 @@
+<main class="octo-page octo-page--compare">
+  <section class="octo-section-header octo-section-header--page">
+    <div>
+      <p class="octo-eyebrow">React Server Components in production clothing</p>
+      <h1>Compare GitHub changelogs with Rails at the edge and RSC in the render path.</h1>
+      <p class="octo-lead octo-lead--compact">
+        The form below is a client island. The results panel is a server component tree that renders grouped release notes without shipping parsing libraries to the browser.
+      </p>
+    </div>
+
+    <% if @compare_filters_props[:repo].present? %>
+      <span class="octo-pill">
+        <%= "#{@compare_filters_props[:repo]} · #{@compare_filters_props[:from].presence || "?"} → #{@compare_filters_props[:to].presence || "?"}" %>
+      </span>
+    <% end %>
+  </section>
+
+  <% if @compare_flash.present? %>
+    <div class="octo-flash octo-flash--<%= @compare_flash[:tone] %>"><%= @compare_flash[:message] %></div>
+  <% end %>
+
+  <div class="octo-compare-layout">
+    <div class="octo-sidebar-column">
+      <%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: false) %>
+    </div>
+
+    <div class="octo-results-column">
+      <%= stream_react_component("OctochangelogCompareResultsPage", props: @compare_results_props) %>
+    </div>
+  </div>
+</main>

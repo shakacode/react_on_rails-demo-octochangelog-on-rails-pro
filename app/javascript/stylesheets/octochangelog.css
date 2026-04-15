@@ -1,0 +1,734 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap");
+
+:root {
+  color-scheme: light;
+  --octo-cream: #f5efe5;
+  --octo-sand: rgba(255, 249, 240, 0.86);
+  --octo-ink: #132128;
+  --octo-muted: #52616b;
+  --octo-line: rgba(19, 33, 40, 0.1);
+  --octo-teal: #0c5962;
+  --octo-deep: #0f3341;
+  --octo-coral: #ea7c56;
+  --octo-gold: #f2bc61;
+  --octo-danger: #a33a35;
+  --octo-success: #1f7a4d;
+  --octo-shadow: 0 24px 64px rgba(18, 31, 37, 0.12);
+  --octo-radius-xl: 30px;
+  --octo-radius-lg: 24px;
+  --octo-radius-md: 18px;
+  --octo-radius-sm: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--octo-ink);
+  background:
+    radial-gradient(circle at top left, rgba(234, 124, 86, 0.18), transparent 32%),
+    radial-gradient(circle at 85% 15%, rgba(12, 89, 98, 0.16), transparent 26%),
+    linear-gradient(180deg, #fbf6ef 0%, #f3ebdf 100%);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+code,
+pre {
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+}
+
+.octo-page {
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+.octo-page > * {
+  animation: octo-rise-in 520ms ease both;
+}
+
+.octo-page > *:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.octo-page > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.octo-page > *:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.octo-hero,
+.octo-card,
+.octo-history-card,
+.octo-filter-card,
+.octo-results-panel,
+.octo-flash {
+  border: 1px solid var(--octo-line);
+  border-radius: var(--octo-radius-xl);
+  box-shadow: var(--octo-shadow);
+}
+
+.octo-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+  gap: 28px;
+  padding: 32px;
+  background:
+    linear-gradient(135deg, rgba(12, 89, 98, 0.94), rgba(15, 51, 65, 0.96)),
+    linear-gradient(120deg, rgba(242, 188, 97, 0.24), transparent);
+  color: #fbf5eb;
+}
+
+.octo-hero-copy h1,
+.octo-section-header h2,
+.octo-section-header--page h1,
+.octo-filter-header h2,
+.octo-results-overview h2,
+.octo-group-header h3,
+.octo-empty-state h2,
+.octo-card h3,
+.octo-release-meta h4 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  letter-spacing: -0.03em;
+}
+
+.octo-hero-copy h1 {
+  font-size: clamp(2.7rem, 6vw, 4.9rem);
+  line-height: 0.95;
+  max-width: 11ch;
+}
+
+.octo-eyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  opacity: 0.78;
+}
+
+.octo-lead {
+  margin: 20px 0 0;
+  max-width: 62ch;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  color: rgba(251, 245, 235, 0.86);
+}
+
+.octo-lead--compact {
+  color: var(--octo-muted);
+}
+
+.octo-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.octo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+  cursor: pointer;
+}
+
+.octo-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.octo-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.octo-button--primary {
+  background: linear-gradient(135deg, var(--octo-coral), #f29a58);
+  color: #fff8f0;
+}
+
+.octo-button--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border-color: rgba(255, 245, 235, 0.22);
+}
+
+.octo-hero-panel {
+  display: flex;
+  align-items: stretch;
+}
+
+.octo-stat-grid,
+.octo-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.octo-stat-card,
+.octo-summary-card {
+  padding: 18px;
+  border-radius: var(--octo-radius-md);
+  background: rgba(255, 250, 242, 0.12);
+  border: 1px solid rgba(255, 247, 238, 0.16);
+}
+
+.octo-stat-card span,
+.octo-summary-card span {
+  display: block;
+  font-size: 0.84rem;
+  color: rgba(251, 245, 235, 0.72);
+}
+
+.octo-summary-card span {
+  color: var(--octo-muted);
+}
+
+.octo-stat-card strong,
+.octo-summary-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.25rem;
+}
+
+.octo-summary-card strong {
+  font-size: 1.05rem;
+}
+
+.octo-section {
+  margin-top: 28px;
+}
+
+.octo-section-header,
+.octo-section-header--page {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.octo-section-header h2,
+.octo-section-header--page h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.octo-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.octo-card {
+  padding: 22px;
+  background: var(--octo-sand);
+  backdrop-filter: blur(12px);
+}
+
+.octo-card p {
+  margin: 12px 0 0;
+  line-height: 1.65;
+  color: var(--octo-muted);
+}
+
+.octo-card--interactive {
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.octo-card--interactive:hover {
+  transform: translateY(-3px);
+  border-color: rgba(12, 89, 98, 0.25);
+}
+
+.octo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.octo-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(12, 89, 98, 0.12);
+  color: var(--octo-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.octo-pill--soft {
+  background: rgba(19, 33, 40, 0.07);
+  color: var(--octo-muted);
+}
+
+.octo-pill--success {
+  background: rgba(31, 122, 77, 0.12);
+  color: var(--octo-success);
+}
+
+.octo-history-card,
+.octo-results-panel {
+  padding: 24px;
+  background: var(--octo-sand);
+  backdrop-filter: blur(14px);
+}
+
+.octo-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.octo-history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--octo-line);
+}
+
+.octo-history-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.octo-history-row p {
+  margin: 6px 0 0;
+  color: var(--octo-muted);
+}
+
+.octo-history-link {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.octo-history-link:hover {
+  text-decoration: underline;
+}
+
+.octo-empty-state {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 240px;
+  text-align: center;
+  padding: 32px;
+  border-radius: var(--octo-radius-lg);
+  background: rgba(255, 251, 246, 0.72);
+  border: 1px dashed rgba(19, 33, 40, 0.16);
+}
+
+.octo-empty-state--tall {
+  min-height: 420px;
+}
+
+.octo-empty-state--danger {
+  border-color: rgba(163, 58, 53, 0.24);
+}
+
+.octo-empty-state p {
+  margin: 0;
+  max-width: 56ch;
+  line-height: 1.65;
+  color: var(--octo-muted);
+}
+
+.octo-compare-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.35fr);
+  gap: 20px;
+}
+
+.octo-sidebar-column {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+}
+
+.octo-results-column {
+  min-width: 0;
+}
+
+.octo-filter-card {
+  padding: 24px;
+  background:
+    linear-gradient(160deg, rgba(255, 249, 241, 0.9), rgba(248, 241, 231, 0.86)),
+    rgba(255, 255, 255, 0.6);
+}
+
+.octo-filter-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.octo-filter-header h2 {
+  max-width: 18ch;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  line-height: 1.02;
+}
+
+.octo-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.octo-field {
+  display: grid;
+  gap: 8px;
+}
+
+.octo-field span {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--octo-muted);
+}
+
+.octo-field input,
+.octo-field select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid rgba(19, 33, 40, 0.14);
+  border-radius: var(--octo-radius-sm);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--octo-ink);
+}
+
+.octo-field input:focus,
+.octo-field select:focus {
+  outline: 2px solid rgba(12, 89, 98, 0.18);
+  outline-offset: 1px;
+}
+
+.octo-help-text,
+.octo-inline-note,
+.octo-auth-callout p {
+  margin: 12px 0 0;
+  line-height: 1.6;
+  color: var(--octo-muted);
+}
+
+.octo-error-note {
+  margin: 12px 0 0;
+  color: var(--octo-danger);
+  font-weight: 700;
+}
+
+.octo-suggestion-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.octo-suggestion {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  border-radius: var(--octo-radius-sm);
+  border: 1px solid rgba(19, 33, 40, 0.08);
+  background: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+}
+
+.octo-suggestion strong {
+  font-size: 0.96rem;
+}
+
+.octo-suggestion span,
+.octo-suggestion small {
+  color: var(--octo-muted);
+}
+
+.octo-auth-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--octo-line);
+}
+
+.octo-auth-callout h3 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.octo-results-panel--loading {
+  min-height: 520px;
+}
+
+.octo-results-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.9fr);
+  gap: 18px;
+}
+
+.octo-results-overview h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.octo-group-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.octo-group-nav a {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(15, 51, 65, 0.07);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.octo-groups {
+  display: grid;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.octo-group {
+  padding-top: 12px;
+  border-top: 1px solid var(--octo-line);
+}
+
+.octo-group-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.octo-group-header h3 {
+  font-size: 1.7rem;
+}
+
+.octo-release-stack {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.octo-release-card {
+  padding: 18px;
+  border-radius: var(--octo-radius-md);
+  background: rgba(255, 253, 250, 0.84);
+  border: 1px solid rgba(19, 33, 40, 0.08);
+}
+
+.octo-release-meta h4 {
+  margin-top: 10px;
+  font-size: 1.3rem;
+}
+
+.octo-release-meta a {
+  text-decoration: none;
+}
+
+.octo-release-meta a:hover {
+  text-decoration: underline;
+}
+
+.octo-markdown {
+  margin-top: 14px;
+  color: var(--octo-ink);
+  line-height: 1.7;
+}
+
+.octo-markdown > *:first-child {
+  margin-top: 0;
+}
+
+.octo-markdown > *:last-child {
+  margin-bottom: 0;
+}
+
+.octo-markdown ul,
+.octo-markdown ol {
+  padding-left: 22px;
+}
+
+.octo-markdown pre {
+  overflow-x: auto;
+  padding: 16px;
+  border-radius: var(--octo-radius-sm);
+  background: #112731;
+  color: #eef7fa;
+}
+
+.octo-markdown code:not(pre code) {
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(19, 33, 40, 0.08);
+}
+
+.octo-flash {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  background: rgba(255, 251, 246, 0.86);
+  font-weight: 700;
+}
+
+.octo-flash--danger {
+  color: var(--octo-danger);
+}
+
+.octo-flash--success {
+  color: var(--octo-success);
+}
+
+.octo-skeleton-bar,
+.octo-summary-card--ghost,
+.octo-release-card--ghost {
+  overflow: hidden;
+  position: relative;
+  background: rgba(19, 33, 40, 0.06);
+}
+
+.octo-skeleton-bar::after,
+.octo-summary-card--ghost::after,
+.octo-release-card--ghost::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: octo-shimmer 1.2s infinite;
+}
+
+.octo-skeleton-bar {
+  height: 16px;
+  width: 52%;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.octo-skeleton-bar--wide {
+  width: 74%;
+  height: 20px;
+}
+
+.octo-summary-card--ghost {
+  min-height: 92px;
+}
+
+.octo-release-card--ghost {
+  min-height: 168px;
+  margin-top: 14px;
+}
+
+@keyframes octo-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes octo-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 1024px) {
+  .octo-hero,
+  .octo-results-overview,
+  .octo-compare-layout,
+  .octo-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .octo-sidebar-column {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .octo-page {
+    width: min(100% - 20px, 100%);
+    padding-top: 18px;
+  }
+
+  .octo-hero,
+  .octo-card,
+  .octo-history-card,
+  .octo-filter-card,
+  .octo-results-panel,
+  .octo-flash {
+    border-radius: 22px;
+  }
+
+  .octo-hero,
+  .octo-filter-card,
+  .octo-results-panel {
+    padding: 20px;
+  }
+
+  .octo-auth-callout,
+  .octo-filter-header,
+  .octo-group-header,
+  .octo-history-row,
+  .octo-section-header,
+  .octo-section-header--page {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .octo-stat-grid,
+  .octo-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
