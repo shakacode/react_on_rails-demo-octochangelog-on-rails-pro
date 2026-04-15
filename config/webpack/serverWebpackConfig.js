@@ -70,7 +70,18 @@ const configureServer = (rscBundle = false) => {
   // Add RSC plugin for server bundle (handles client component references)
   // Skip for RSC bundle - it doesn't need RSCWebpackPlugin
   if (!rscBundle) {
-    serverWebpackConfig.plugins.push(new RSCWebpackPlugin({ isServer: true }));
+    serverWebpackConfig.plugins.push(
+      new RSCWebpackPlugin({
+        isServer: true,
+        // Limit client component discovery to application code so vendored gems
+        // inside the repo do not get swept into the RSC manifest scan.
+        clientReferences: [{
+          directory: "./app/javascript",
+          recursive: true,
+          include: /\.(js|ts|jsx|tsx)$/,
+        }],
+      }),
+    );
   }
   serverWebpackConfig.plugins.unshift(new bundler.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
 
