@@ -101,7 +101,7 @@ module Github
     def cacheable_get_json(path, **query)
       return get_json(path, **query) if @access_token.present?
 
-      Rails.cache.fetch(["github-client", path, query], expires_in: 10.minutes) do
+      Rails.cache.fetch([ "github-client", path, query ], expires_in: 10.minutes) do
         get_json(path, **query)
       end
     end
@@ -122,7 +122,7 @@ module Github
       request["Authorization"] = "Bearer #{@access_token}" if @access_token.present?
 
       payload, response = perform(request, uri)
-      [payload, response.to_hash]
+      [ payload, response.to_hash ]
     end
 
     def perform(request, uri)
@@ -131,7 +131,7 @@ module Github
       end
 
       payload = response.body.present? ? JSON.parse(response.body) : {}
-      return [payload, response] if response.is_a?(Net::HTTPSuccess)
+      return [ payload, response ] if response.is_a?(Net::HTTPSuccess)
 
       message =
         payload["message"].presence ||

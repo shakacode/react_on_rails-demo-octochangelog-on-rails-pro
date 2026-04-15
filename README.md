@@ -19,6 +19,13 @@ Octochangelog was the best showcase candidate because it is:
 - The compare form is a standalone client React island mounted with `react_component`.
 - The expensive release-note processing stays on the server and does not ship parsing libraries to the browser.
 
+## Attribution
+
+The product concept and comparison flow are adapted from
+[Belco90/octochangelog](https://github.com/Belco90/octochangelog), which is distributed
+under the MIT license. This repository is a Rails + React on Rails Pro reimplementation
+of that idea and keeps the original project credited in both the docs and license setup.
+
 ## Local setup
 
 Requirements:
@@ -93,3 +100,12 @@ Generated asset snapshot:
 - `public/packs/js/client0.js`: 21,899 bytes
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,597 bytes
 - `public/packs/css/application.css`: 13,648 bytes
+
+## CI
+
+GitHub Actions installs Ruby and Node, builds the Shakapacker bundles, and runs the
+Rails test suite on pushes to `main` and on pull requests.
+
+## License
+
+This repository is distributed under the MIT License. See [`LICENSE`](LICENSE).

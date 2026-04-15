@@ -16,7 +16,7 @@ module Github
 
       filtered = Client.filter_releases_by_range(releases, from: "1.0.0", to: "latest")
 
-      assert_equal ["v3.0.0", "v2.0.0"], filtered.map { |release| release["tag_name"] }
+      assert_equal [ "v3.0.0", "v2.0.0" ], filtered.map { |release| release["tag_name"] }
     end
   end
 end

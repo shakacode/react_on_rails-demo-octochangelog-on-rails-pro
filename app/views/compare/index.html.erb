@@ -10,7 +10,7 @@
 
     <% if @compare_filters_props[:repo].present? %>
       <span class="octo-pill">
-        <%= [@compare_filters_props[:repo], @compare_filters_props[:from].presence || "?", @compare_filters_props[:to].presence || "?"].join(" · ").sub(" · ", " · ").sub(/ · ([^·]+)$/, " → \\1") %>
+        <%= "#{@compare_filters_props[:repo]} · #{@compare_filters_props[:from].presence || "?"} → #{@compare_filters_props[:to].presence || "?"}" %>
       </span>
     <% end %>
   </section>
