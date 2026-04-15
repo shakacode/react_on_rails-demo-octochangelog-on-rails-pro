@@ -14,7 +14,18 @@ const configureClient = () => {
   delete clientConfig.entry['server-bundle'];
 
   // Add React Server Components plugin for client bundle
-  clientConfig.plugins.push(new RSCWebpackPlugin({ isServer: false }));
+  clientConfig.plugins.push(
+    new RSCWebpackPlugin({
+      isServer: false,
+      // Limit client component discovery to application code so vendored gems
+      // inside the repo do not get swept into the RSC manifest scan.
+      clientReferences: [{
+        directory: "./app/javascript",
+        recursive: true,
+        include: /\.(js|ts|jsx|tsx)$/,
+      }],
+    }),
+  );
 
   return clientConfig;
 };
