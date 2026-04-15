@@ -247,7 +247,8 @@ body {
 
 .crm-stat-grid,
 .crm-detail-grid,
-.crm-directory-layout {
+.crm-directory-layout,
+.crm-company-grid {
   display: grid;
   gap: 16px;
 }
@@ -270,9 +271,40 @@ body {
   gap: 16px;
 }
 
+.crm-company-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .crm-directory,
 .crm-company-rollup {
   display: grid;
+}
+
+.crm-company-card,
+.crm-company-card__stats {
+  display: grid;
+  gap: 16px;
+}
+
+.crm-company-card__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.crm-company-card__stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.crm-company-card__stats strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.crm-company-card__placeholder {
+  color: var(--crm-muted);
+  font-size: 0.92rem;
 }
 
 .crm-directory__row,
@@ -544,6 +576,7 @@ body {
   .crm-hero,
   .crm-stat-grid,
   .crm-directory-layout,
+  .crm-company-grid,
   .crm-detail-grid,
   .crm-stage-summary,
   .crm-dashboard-grid,

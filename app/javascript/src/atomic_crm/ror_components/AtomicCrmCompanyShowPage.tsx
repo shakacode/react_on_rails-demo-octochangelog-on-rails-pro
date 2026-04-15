@@ -1,6 +1,16 @@
 import React from 'react';
 import AtomicCrmAppChrome from '../components/AtomicCrmAppChrome';
 
+type Contact = {
+  fullName: string;
+  id: number;
+  lastSeenLabel: string;
+  path: string;
+  statusLabel: string;
+  statusTone: string;
+  title: string | null;
+};
+
 type Metric = {
   detail: string;
   label: string;
@@ -17,94 +27,65 @@ type RecentNote = {
 
 type RelatedDeal = {
   amount: string;
+  contactName: string;
   id: number;
   lastSeenLabel: string;
   name: string;
   stageLabel: string;
 };
 
-type UpcomingTask = {
-  dueLabel: string;
-  id: number;
-  priorityLabel: string;
-  priorityTone: string;
-  title: string;
-};
-
 type Props = {
-  companyCity: string | null;
-  companyName: string;
-  companyPath: string;
-  companyWebsite: string | null;
-  email: string | null;
-  fullName: string;
-  lastSeenLabel: string;
+  city: string | null;
+  contacts: Contact[];
   metrics: Metric[];
+  name: string;
   recentNotes: RecentNote[];
   relatedDeals: RelatedDeal[];
-  statusLabel: string;
-  statusTone: string;
+  sector: string | null;
+  size: string | null;
   thesis: string;
-  title: string | null;
-  upcomingTasks: UpcomingTask[];
+  website: string | null;
 };
 
-export default function AtomicCrmContactShowPage({
-  companyCity,
-  companyName,
-  companyPath,
-  companyWebsite,
-  email,
-  fullName,
-  lastSeenLabel,
+export default function AtomicCrmCompanyShowPage({
+  city,
+  contacts,
   metrics,
+  name,
   recentNotes,
   relatedDeals,
-  statusLabel,
-  statusTone,
+  sector,
+  size,
   thesis,
-  title,
-  upcomingTasks,
+  website,
 }: Props) {
   return (
-    <AtomicCrmAppChrome activePage="contacts">
+    <AtomicCrmAppChrome activePage="companies">
       <main className="crm-shell crm-page">
-        <a className="crm-text-link crm-page__back" href="/contacts">
-          Back to contacts
+        <a className="crm-text-link crm-page__back" href="/companies">
+          Back to companies
         </a>
 
         <section className="crm-card crm-contact-hero">
           <div className="crm-contact-hero__heading">
             <div>
-              <p className="crm-shell__eyebrow">Streamed contact detail</p>
-              <h1>{fullName}</h1>
+              <p className="crm-shell__eyebrow">Streamed company detail</p>
+              <h1>{name}</h1>
               <p>
-                {title ? `${title} at ` : ''}
-                <a className="crm-text-link" href={companyPath}>
-                  {companyName}
-                </a>
+                {sector || 'General'} · {city || 'City pending'}
               </p>
             </div>
-            <span className={`crm-pill crm-pill--${statusTone}`}>{statusLabel}</span>
+            <span className="crm-pill crm-pill--deal">{size || 'Unspecified size'}</span>
           </div>
 
           <div className="crm-contact-hero__meta">
-            {email ? (
-              <a className="crm-text-link" href={`mailto:${email}`}>
-                {email}
-              </a>
-            ) : (
-              <span>No email yet</span>
-            )}
-            <span>{companyCity || 'City pending'}</span>
-            {companyWebsite ? (
-              <a className="crm-text-link" href={companyWebsite} rel="noreferrer" target="_blank">
-                {companyWebsite.replace(/^https?:\/\//, '')}
+            {website ? (
+              <a className="crm-text-link" href={website} rel="noreferrer" target="_blank">
+                {website.replace(/^https?:\/\//, '')}
               </a>
             ) : (
               <span>Website pending</span>
             )}
-            <span>Seen {lastSeenLabel}</span>
           </div>
 
           <p>{thesis}</p>
@@ -124,19 +105,26 @@ export default function AtomicCrmContactShowPage({
           <article className="crm-card crm-panel">
             <div className="crm-panel__header">
               <div>
-                <p className="crm-shell__eyebrow">Tasks</p>
-                <h2>Upcoming work</h2>
+                <p className="crm-shell__eyebrow">Contacts</p>
+                <h2>Linked people</h2>
               </div>
             </div>
 
             <div className="crm-list">
-              {upcomingTasks.map((task) => (
-                <div className="crm-list__item" key={task.id}>
+              {contacts.map((contact) => (
+                <div className="crm-list__item" key={contact.id}>
                   <div>
-                    <strong>{task.title}</strong>
-                    <p>Due {task.dueLabel}</p>
+                    <strong>
+                      <a className="crm-text-link" href={contact.path}>
+                        {contact.fullName}
+                      </a>
+                    </strong>
+                    <p>{contact.title || 'Title pending'}</p>
                   </div>
-                  <span className={`crm-pill crm-pill--${task.priorityTone}`}>{task.priorityLabel}</span>
+                  <div className="crm-deal-summary">
+                    <span>Seen {contact.lastSeenLabel}</span>
+                    <span className={`crm-pill crm-pill--${contact.statusTone}`}>{contact.statusLabel}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -146,7 +134,7 @@ export default function AtomicCrmContactShowPage({
             <div className="crm-panel__header">
               <div>
                 <p className="crm-shell__eyebrow">Deals</p>
-                <h2>Related opportunities</h2>
+                <h2>Pipeline</h2>
               </div>
             </div>
 
@@ -155,7 +143,9 @@ export default function AtomicCrmContactShowPage({
                 <div className="crm-list__item" key={deal.id}>
                   <div>
                     <strong>{deal.name}</strong>
-                    <p>Seen {deal.lastSeenLabel}</p>
+                    <p>
+                      {deal.contactName} · Seen {deal.lastSeenLabel}
+                    </p>
                   </div>
                   <div className="crm-deal-summary">
                     <span>{deal.amount}</span>
@@ -170,7 +160,7 @@ export default function AtomicCrmContactShowPage({
             <div className="crm-panel__header">
               <div>
                 <p className="crm-shell__eyebrow">Notes</p>
-                <h2>Relationship timeline</h2>
+                <h2>Account timeline</h2>
               </div>
             </div>
 

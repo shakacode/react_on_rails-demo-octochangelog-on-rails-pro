@@ -12,6 +12,7 @@ module AtomicCrm
       {
         companyCity: contact.company.city,
         companyName: contact.company.name,
+        companyPath: "/companies/#{contact.company.id}",
         companyWebsite: contact.company.website,
         email: contact.email,
         fullName: contact.full_name,

@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-type ActivePage = 'dashboard' | 'contacts';
+type ActivePage = 'companies' | 'dashboard' | 'contacts';
 
 type Props = {
   activePage: ActivePage;
@@ -10,6 +10,7 @@ type Props = {
 const NAV_ITEMS: Array<{ href: string; id: ActivePage; label: string }> = [
   { href: '/', id: 'dashboard', label: 'Dashboard' },
   { href: '/contacts', id: 'contacts', label: 'Contacts' },
+  { href: '/companies', id: 'companies', label: 'Companies' },
 ];
 
 export default function AtomicCrmAppChrome({ activePage, children }: Props) {

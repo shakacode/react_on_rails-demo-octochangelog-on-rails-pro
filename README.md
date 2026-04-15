@@ -33,6 +33,8 @@ The repo now proves both the React on Rails Pro plumbing and the first real migr
 - `/` streams a query-backed CRM dashboard through React on Rails Pro
 - `/contacts` streams a Rails-backed contacts directory with account rollups
 - `/contacts/:id` streams a contact detail page with related tasks, deals, and notes
+- `/companies` streams a Rails-backed company directory with pipeline metrics
+- `/companies/:id` streams a company detail page with linked contacts, deals, and notes
 - the deal board mounts as a client island beside the streamed server-rendered surface
 - the Node renderer, RSC bundle, and manifest flow are working locally
 
@@ -76,6 +78,8 @@ Additional notes for local boot and troubleshooting live in [docs/development-no
 - `/` renders the Atomic CRM landing/dashboard shell
 - `/contacts` renders the streamed contacts directory
 - `/contacts/:id` renders the streamed contact detail page
+- `/companies` renders the streamed company directory
+- `/companies/:id` renders the streamed company detail page
 - `/rsc_payload/:component_name` streams the React Server Component payload used by React on Rails Pro
 
 ## Architecture
@@ -93,15 +97,21 @@ Additional notes for local boot and troubleshooting live in [docs/development-no
 
 - `app/controllers/home_controller.rb` prepares the Rails-side props and starts the streamed view
 - `app/controllers/contacts_controller.rb` owns the list/show contact routes
+- `app/controllers/companies_controller.rb` owns the list/show company routes
 - `app/views/home/index.html.erb` mounts the RSC surface and the client island
 - `app/views/contacts/*.html.erb` mount the streamed contacts routes
+- `app/views/companies/*.html.erb` mount the streamed company routes
 - `app/presenters/atomic_crm/home_page_payload.rb` builds the dashboard payload from Rails models
 - `app/presenters/atomic_crm/contacts_page_payload.rb` builds the contacts directory props
 - `app/presenters/atomic_crm/contact_page_payload.rb` builds the contact detail props
+- `app/presenters/atomic_crm/companies_page_payload.rb` builds the company directory props
+- `app/presenters/atomic_crm/company_page_payload.rb` builds the company detail props
 - `app/javascript/src/atomic_crm/components/AtomicCrmAppChrome.tsx` provides the shared product shell
 - `app/javascript/src/atomic_crm/ror_components/AtomicCrmHomePage.tsx` is the streamed server component
 - `app/javascript/src/atomic_crm/ror_components/AtomicCrmContactsPage.tsx` is the streamed contacts index route
 - `app/javascript/src/atomic_crm/ror_components/AtomicCrmContactShowPage.tsx` is the streamed contact detail route
+- `app/javascript/src/atomic_crm/ror_components/AtomicCrmCompaniesPage.tsx` is the streamed company index route
+- `app/javascript/src/atomic_crm/ror_components/AtomicCrmCompanyShowPage.tsx` is the streamed company detail route
 - `app/javascript/src/atomic_crm/ror_components/AtomicCrmDealBoardIsland.tsx` is the interactive client island
 - `client/node-renderer.js` configures the React on Rails Pro Node renderer
 
@@ -124,14 +134,18 @@ From the current local dashboard + contacts slice:
 - `AtomicCrmHomePage.js`: `1,539 B` (`556 B` gzip)
 - `AtomicCrmContactsPage.js`: `1,571 B` (`561 B` gzip)
 - `AtomicCrmContactShowPage.js`: `1,595 B` (`569 B` gzip)
+- `AtomicCrmCompaniesPage.js`: `1,579 B` (`563 B` gzip)
+- `AtomicCrmCompanyShowPage.js`: `1,595 B` (`569 B` gzip)
 - `AtomicCrmDealBoardIsland.js`: `5,035 B` (`1,304 B` gzip)
-- `application.css`: `9,939 B` (`2,418 B` gzip)
-- `rsc-bundle.js`: `419,882 B` (`70,894 B` gzip)
-- `server-bundle.js`: `2,189,453 B`
+- `application.css`: `10,494 B` (`2,484 B` gzip)
+- `rsc-bundle.js`: `435,338 B` (`71,634 B` gzip)
+- `server-bundle.js`: `2,206,119 B`
 - warm local `/` request: about `26-33 ms` total in the latest five-run sample
 - warm local `/contacts` request: about `26-42 ms` total after the first request
 - warm local `/contacts/:id` request: about `25-35 ms` total after the first request
-- latest Rails logs: `/` completed in `13 ms`, `/contacts` in `15-21 ms`, `/contacts/:id` in `11 ms`
+- warm local `/companies` request: about `23-39 ms` total after the first request
+- warm local `/companies/:id` request: about `26-35 ms` total after the first request
+- latest Rails logs: `/` completed in `13 ms`, `/contacts` in `15-21 ms`, `/contacts/:id` in `11 ms`, `/companies` in `9-19 ms`, `/companies/:id` in `19-20 ms`
 
 The apples-to-oranges caveat matters here:
 
@@ -149,7 +163,7 @@ This repo is meant to answer the question, "What does React on Rails Pro buy us 
 - It shows that RSC can own the expensive, data-heavy rendering surfaces.
 - It shows that highly interactive UI can stay isolated instead of forcing the whole app into a client SPA.
 - It shows how Rails presenters and Active Record queries can feed RSC surfaces directly without introducing a separate API layer.
-- It now shows a realistic master/detail CRM route pair instead of only a dashboard shell.
+- It now shows two realistic CRM route families with cross-links between contacts and companies instead of only a dashboard shell.
 - It gives ShakaCode a demo that looks closer to internal SaaS software than a marketing page or feed reader.
 
 ## Migration Roadmap
@@ -157,7 +171,7 @@ This repo is meant to answer the question, "What does React on Rails Pro buy us 
 Short term:
 
 - port companies and deals onto the same streamed shell pattern
-- expand from seeded contacts into richer company and deal detail pages
+- expand from seeded contacts and companies into richer deal detail pages
 - add route-level comparisons showing how little client JavaScript each read-heavy page ships
 - keep the pipeline board as an explicit client island
 
