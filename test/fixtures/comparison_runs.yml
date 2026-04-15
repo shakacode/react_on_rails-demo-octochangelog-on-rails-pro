@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  repository_full_name: MyString
+  from_version: MyString
+  to_version: MyString
+  github_authenticated: false
+
+two:
+  repository_full_name: MyString
+  from_version: MyString
+  to_version: MyString
+  github_authenticated: false
