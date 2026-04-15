@@ -76,6 +76,9 @@ jobs:
       - name: Prepare database
         run: bin/rails db:prepare
 
+      - name: Generate React on Rails packs
+        run: bin/rails react_on_rails:generate_packs
+
       - name: Build packs
         run: bin/shakapacker
 
