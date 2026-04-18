@@ -40,7 +40,7 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 
 - [Current Status](docs/current-status.md)
 - [Demo Guide](docs/demo-guide.md)
-- [Atomic CRM Migration Plan](docs/atomic-crm-migration-plan.md)
+- [Atomic CRM Migration Plan and Status](docs/atomic-crm-migration-plan.md)
 - [Positioning Notes](docs/positioning-notes.md)
 - [Performance Notes](docs/performance-notes.md)
 

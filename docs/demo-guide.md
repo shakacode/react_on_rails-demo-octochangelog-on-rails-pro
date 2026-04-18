@@ -9,6 +9,10 @@ Show why React on Rails Pro is compelling for pages that have:
 - React-quality interactivity
 - a Rails team that still wants Rails to own the application shell
 
+This is the right demo when the page is mostly server-heavy and public-facing.
+If the conversation shifts toward internal SaaS workflows, linked record pages, or a bounded board-style
+interaction surface, pivot to Atomic CRM instead.
+
 ## Recommended Demo Flow
 
 1. Start on `/`.
@@ -44,6 +48,22 @@ Show why React on Rails Pro is compelling for pages that have:
 - "We are not shipping markdown parsing and release grouping logic to the browser."
 - "OAuth, sessions, redirects, persistence, and routing are still just Rails."
 - "This is a better fit for server-heavy pages than pretending every surface needs to become a full SPA."
+
+## When To Pivot To Atomic CRM
+
+Use Octochangelog first when the prospect wants to see:
+
+- external API work
+- markdown-heavy rendering
+- search/compare flows
+- a page where the browser mostly stays out of the way
+
+Switch to Atomic CRM when the prospect asks for:
+
+- a product-shaped internal tool
+- linked records and back-office navigation
+- a more credible write-adjacent workflow story
+- one explicit client island inside a Rails-owned app shell
 
 ## What Not To Overclaim
 

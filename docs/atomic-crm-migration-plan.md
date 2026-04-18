@@ -1,5 +1,32 @@
 # Atomic CRM Migration Plan
 
+## Status Update
+
+As of April 18, 2026, this is no longer just a recommendation memo. There is now an active sibling
+worktree at `../react_on_rails-demo-atomic-crm` with real migration progress.
+
+Current local snapshot from that repo:
+
+- latest local commits:
+  - `fbd9e4d` `Add Atomic CRM demo and positioning guides`
+  - `025796b` `Add benchmark tooling and production asset docs`
+  - `4cc2a35` `Add streamed task routes and cross-links`
+  - `c4404aa` `Add streamed deals routes and stabilize demo seeds`
+  - `6bfd96a` `Add streamed company routes`
+- implemented route families:
+  - `/`
+  - `/contacts` and `/contacts/:id`
+  - `/companies` and `/companies/:id`
+  - `/deals` and `/deals/:id`
+  - `/tasks` and `/tasks/:id`
+- the deal board is already isolated as a client island while the list/detail routes remain Rails-owned streamed surfaces
+- production-assets benchmark tooling now exists for route timings, route-shipped asset payloads, and bundle inventory
+- demo-guide and positioning docs now exist in the Atomic CRM repo, including explicit comparison guidance versus `gumroad-rsc` and `react_on_rails-hacker-news-app`
+
+Current external blocker:
+
+- `https://github.com/shakacode/react_on_rails-demo-atomic-crm.git` still returns `Repository not found`, so the current Atomic CRM progress cannot be pushed yet
+
 ## Goal
 
 Prepare the next high-value React on Rails Pro showcase migration:
@@ -8,6 +35,9 @@ Prepare the next high-value React on Rails Pro showcase migration:
 
 This document turns the high-level recommendation into a concrete implementation plan grounded in
 the current `marmelab/atomic-crm` codebase.
+
+Treat the sections below as the original thesis plus the remaining roadmap, not as an untouched
+greenfield proposal.
 
 ## Source Snapshot
 
@@ -134,6 +164,24 @@ The first version should be narrower than upstream Atomic CRM. A good v1 scope i
 - notes/activity timeline
 - login/logout and a simple seeded demo user flow
 - enough seed/demo data to make the UI credible
+
+### Implemented So Far In The Local Migration
+
+- dashboard
+- contacts list and detail
+- companies list and detail
+- deals list shell, board island, and detail
+- tasks list and detail
+- seeded demo data with deterministic canonical IDs for docs and benchmarks
+- production-assets benchmark capture
+- demo and positioning docs
+
+### Still Missing Relative To The Intended v1 Scope
+
+- notes/activity as a first-class route family
+- auth/login flow
+- richer search/filter workflow
+- a public deployment
 
 ### Defer
 

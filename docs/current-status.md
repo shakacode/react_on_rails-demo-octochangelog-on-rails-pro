@@ -2,7 +2,22 @@
 
 ## Snapshot
 
-As of April 15, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification and green GitHub Actions.
+As of April 18, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification and green GitHub Actions.
+
+## Companion Demo Update
+
+The follow-on Atomic CRM workstream is now real, not hypothetical. The sibling repo at
+`../react_on_rails-demo-atomic-crm` has already shipped dashboard, contacts, companies, deals, and
+tasks routes, plus production-assets benchmark tooling and demo/positioning docs.
+
+That matters because it gives the demo portfolio a second shape:
+
+- Octochangelog remains the public, server-heavy comparison/search demo
+- Atomic CRM is becoming the internal SaaS / product workflow demo with one explicit client island
+
+The current blocker for Atomic CRM is external, not technical:
+
+- the target GitHub repo still does not exist, so the local work cannot be pushed yet
 
 ## What Is Done
 
