@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-As of April 18, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification and green GitHub Actions.
+As of April 19, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, canonical demo seed data, and repeatable local benchmark tooling.
 
 ## Companion Demo Update
 
@@ -26,6 +26,9 @@ The current blocker for Atomic CRM is external, not technical:
 - The compare controls are isolated as a client island instead of hydrating the entire page.
 - GitHub repository search and release lookup are wired through Rails JSON endpoints.
 - Markdown-heavy release notes are parsed and grouped on the server.
+- Fresh setup now seeds canonical comparison history so the home page is persuasive immediately.
+- `bin/benchmark-demo` now captures route timings plus shipped asset sizes from a single command.
+- The local benchmark snapshot has been rerun against the live stack and written back into the docs.
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
 

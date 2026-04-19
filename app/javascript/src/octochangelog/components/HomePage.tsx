@@ -136,7 +136,10 @@ export default function HomePage({
           ) : (
             <div className="octo-empty-state">
               <h3>No comparisons recorded yet</h3>
-              <p>Run a few real comparisons and they will start showing up here automatically.</p>
+              <p>
+                Run <code>bin/rails db:seed</code> for the canonical demo history or make a few real
+                comparisons and they will start showing up here automatically.
+              </p>
             </div>
           )}
         </div>

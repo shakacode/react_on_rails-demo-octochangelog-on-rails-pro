@@ -61,9 +61,7 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 ### Install and Run
 
 ```bash
-bundle install
-npm install
-bin/rails db:prepare
+bin/setup --skip-server
 bin/rails react_on_rails:generate_packs
 bin/shakapacker
 ```
@@ -78,6 +76,9 @@ RENDERER_PORT=3800 node client/node-renderer.js
 Then open [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
 If you use `overmind`, `bin/dev` is also available.
+
+`bin/setup` now seeds canonical comparison history, so the homepage stats and recent activity are
+useful immediately after a fresh checkout.
 
 ### Optional GitHub OAuth
 
@@ -95,6 +96,7 @@ Without them, the app still works against public GitHub data.
 ```bash
 bin/dev
 bin/shakapacker
+bin/benchmark-demo
 bin/rails react_on_rails:generate_packs
 bin/rubocop
 bin/brakeman --no-pager
@@ -188,12 +190,12 @@ Concretely, it gives a credible answer for surfaces like:
 
 ## Performance Snapshot
 
-These numbers are local development measurements from April 14, 2026 in unauthenticated GitHub mode.
+These numbers are local development measurements from April 19, 2026 in unauthenticated GitHub mode.
 They are useful as a demo baseline, not as a universal production claim.
 
-- warmed `/`: ~31-34 ms total
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~355-419 ms total
-- first compare request after boot or cache miss: ~0.8 s on a representative sample run
+- warmed `/`: ~30-40 ms total
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~353-359 ms total
+- first compare burst after restart: ~615 ms average with a ~1.145 s max on a sampled run
 - `public/packs/js/generated/CompareFiltersStandalone.js`: 1,918 bytes
 - `public/packs/js/client0.js`: 22,012 bytes
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes
@@ -203,10 +205,11 @@ Interpretation:
 
 - the landing page is effectively Rails-fast after warmup
 - the compare page pays for real GitHub I/O plus markdown parsing and grouped rendering
+- the first compare burst still shows the cold-path cost clearly
 - the interactive island stays small
 - the heavy release-note processing remains on the server instead of inflating browser JavaScript
 
-See [Performance Notes](docs/performance-notes.md) for methodology and rerun commands.
+See [Performance Notes](docs/performance-notes.md) for methodology, caveats, and benchmark script usage.
 
 ## Comparison with the Original Octochangelog Shape
 
@@ -227,6 +230,7 @@ The important difference is ownership: Rails remains the request orchestrator an
 Verified locally:
 
 - `bin/shakapacker`
+- `bin/benchmark-demo`
 - `bin/rubocop`
 - `bin/brakeman --no-pager`
 - `bin/bundler-audit`

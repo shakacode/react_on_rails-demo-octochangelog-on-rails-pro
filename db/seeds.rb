@@ -1,9 +1,20 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# frozen_string_literal: true
+
+seeded_at = Time.zone.local(2026, 4, 18, 9, 0, 0)
+
+Octochangelog::DemoCatalog.seed_runs.each_with_index do |attributes, index|
+  comparison_run = ComparisonRun.find_or_initialize_by(
+    repository_full_name: attributes.fetch(:repository_full_name),
+    from_version: attributes.fetch(:from_version),
+    to_version: attributes.fetch(:to_version)
+  )
+
+  comparison_run.assign_attributes(
+    github_authenticated: false,
+    created_at: seeded_at + index.hours,
+    updated_at: seeded_at + index.hours
+  )
+  comparison_run.save!
+end
+
+puts "Seeded #{Octochangelog::DemoCatalog.seed_runs.size} canonical comparison runs."

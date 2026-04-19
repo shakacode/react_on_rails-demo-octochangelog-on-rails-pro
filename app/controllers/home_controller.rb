@@ -22,32 +22,7 @@ class HomeController < ApplicationController
   private
 
   def featured_comparisons
-    [
-      {
-        label: "TanStack Router",
-        note: "A library-sized changelog with enough version depth to stress the parser.",
-        href: compare_path(repo: "TanStack/router", from: "1.120.5", to: "latest"),
-        repo: "TanStack/router",
-        from: "1.120.5",
-        to: "latest"
-      },
-      {
-        label: "Vite",
-        note: "Good for showing off grouped notes, code blocks, and markdown-heavy releases.",
-        href: compare_path(repo: "vitejs/vite", from: "6.0.0", to: "latest"),
-        repo: "vitejs/vite",
-        from: "6.0.0",
-        to: "latest"
-      },
-      {
-        label: "React on Rails",
-        note: "A meta demo: compare React on Rails releases inside the React on Rails Pro port.",
-        href: compare_path(repo: "shakacode/react_on_rails", from: "16.0.0", to: "latest"),
-        repo: "shakacode/react_on_rails",
-        from: "16.0.0",
-        to: "latest"
-      }
-    ]
+    Octochangelog::DemoCatalog.featured_comparisons(compare_path: method(:compare_path))
   end
 
   def recent_runs

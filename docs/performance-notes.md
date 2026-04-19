@@ -4,25 +4,52 @@
 
 These notes are for demo positioning and local reproducibility. They are not a production benchmark report.
 
+## Benchmark Command
+
+The repo now includes `bin/benchmark-demo` so the timing and asset snapshot can be re-run without
+retyping curl loops.
+
+Default usage:
+
+```bash
+bin/benchmark-demo
+```
+
+Useful variants:
+
+```bash
+BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
+BENCHMARK_SKIP_COMPARE=1 bin/benchmark-demo
+BENCHMARK_OUTPUT=json bin/benchmark-demo
+```
+
+Notes:
+
+- the default compare route still depends on live GitHub API latency and rate limits
+- `BENCHMARK_SKIP_COMPARE=1` is useful when you only want the homepage timing plus asset sizes
+- the script reports HTTP status codes so a failed external compare path is visible instead of silently folded into the numbers
+
 ## Test Setup
 
-- Date: April 14, 2026
+- Date: April 19, 2026
 - Mode: local development
 - Rails server: `bundle exec rails s -p 3000`
 - Node renderer: `RENDERER_PORT=3800 node client/node-renderer.js`
 - GitHub mode: unauthenticated public API
 - Compare sample: `repo=octokit/rest.js&from=22.0.0&to=latest`
+- Measurement command: `bin/benchmark-demo`
 
 ## Local HTTP Timing Snapshot
 
-Warmed landing-page requests:
+First benchmark pass after starting the app:
 
-- `/`: ~31-34 ms total
+- `/`: `33-429 ms` total, `119 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `350 ms-1.145 s` total, `615 ms` average
 
-Representative compare requests:
+Immediate warmed rerun:
 
-- first request after boot or cache miss: about `0.8 s` on a sample run
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~355-419 ms total
+- `/`: `30-40 ms` total, `35 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `353-359 ms` total, `357 ms` average
 
 ## Asset Snapshot
 
@@ -35,8 +62,8 @@ Representative compare requests:
 
 - The landing page is effectively Rails-fast after warmup.
 - The compare page is doing real work: GitHub I/O, markdown parsing, grouping, and server rendering.
-- The first compare request is slower because it pays for boot/cache misses and external API work.
-- The warm compare path is the more useful number for steady-state discussion.
+- The first benchmark pass is noisier because it pays for cold-path work and external API variance.
+- The warmed compare path is the more useful number for steady-state discussion.
 - The interactive client surface stays small because the heavy parsing/rendering path remains server-side.
 
 ## What The Browser Does Not Need To Download
@@ -60,22 +87,10 @@ RENDERER_PORT=3800 node client/node-renderer.js
 Then in another terminal:
 
 ```bash
-for i in 1 2 3 4 5; do
-  curl -s -o /dev/null -w "%{time_starttransfer} %{time_total}\n" http://127.0.0.1:3000/
-done
-
-for i in 1 2 3; do
-  curl -s -o /dev/null -w "%{time_starttransfer} %{time_total}\n" \
-    "http://127.0.0.1:3000/compare?repo=octokit/rest.js&from=22.0.0&to=latest"
-done
-
-wc -c \
-  public/packs/js/generated/CompareFiltersStandalone.js \
-  public/packs/js/client0.js \
-  public/packs/js/generated/OctochangelogCompareResultsPage.js \
-  public/packs/css/application.css
+bin/benchmark-demo
 ```
 
 ## Next Performance Step
 
-If this repo needs a stronger performance story, the next useful step is a production-style benchmark with production assets and a stable hosted deployment, not more local curl samples.
+If this repo needs a stronger performance story, the next useful step is a production-style benchmark with
+production assets and a stable hosted deployment, not more local curl samples.
