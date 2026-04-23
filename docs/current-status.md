@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-As of April 19, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, canonical demo seed data, and repeatable local benchmark tooling.
+As of April 22, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, canonical demo seed data, and repeatable local benchmark tooling.
 
 ## Companion Demo Update
 

@@ -190,12 +190,12 @@ Concretely, it gives a credible answer for surfaces like:
 
 ## Performance Snapshot
 
-These numbers are local development measurements from April 19, 2026 in unauthenticated GitHub mode.
+These numbers are local development measurements from April 22, 2026 in unauthenticated GitHub mode.
 They are useful as a demo baseline, not as a universal production claim.
 
-- warmed `/`: ~30-40 ms total
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~353-359 ms total
-- first compare burst after restart: ~615 ms average with a ~1.145 s max on a sampled run
+- warmed `/`: ~29-48 ms total
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~352-430 ms total
+- first compare burst after restart: ~773 ms average with a ~1.567 s max on a sampled run
 - `public/packs/js/generated/CompareFiltersStandalone.js`: 1,918 bytes
 - `public/packs/js/client0.js`: 22,012 bytes
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes

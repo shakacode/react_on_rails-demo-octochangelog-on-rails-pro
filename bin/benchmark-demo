@@ -14,10 +14,20 @@ ASSET_PATHS = [
 
 BASE_URL = ENV.fetch("BENCHMARK_BASE_URL", "http://127.0.0.1:3000")
 COMPARE_PATH = ENV.fetch("BENCHMARK_COMPARE_PATH", "/compare?repo=octokit/rest.js&from=22.0.0&to=latest")
-HOME_RUNS = Integer(ENV.fetch("BENCHMARK_HOME_RUNS", "5"))
-COMPARE_RUNS = Integer(ENV.fetch("BENCHMARK_COMPARE_RUNS", "3"))
 OUTPUT = ENV.fetch("BENCHMARK_OUTPUT", "text")
 SKIP_COMPARE = ENV["BENCHMARK_SKIP_COMPARE"] == "1"
+
+def positive_integer_env(name, default)
+  value = Integer(ENV.fetch(name, default))
+  return value if value.positive?
+
+  abort "#{name} must be greater than 0."
+rescue ArgumentError
+  abort "#{name} must be an integer greater than 0."
+end
+
+HOME_RUNS = positive_integer_env("BENCHMARK_HOME_RUNS", "5")
+COMPARE_RUNS = positive_integer_env("BENCHMARK_COMPARE_RUNS", "3") unless SKIP_COMPARE
 
 def build_url(path)
   return path if path.start_with?("http://", "https://")

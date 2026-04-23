@@ -31,7 +31,7 @@ Notes:
 
 ## Test Setup
 
-- Date: April 19, 2026
+- Date: April 22, 2026
 - Mode: local development
 - Rails server: `bundle exec rails s -p 3000`
 - Node renderer: `RENDERER_PORT=3800 node client/node-renderer.js`
@@ -44,12 +44,12 @@ Notes:
 First benchmark pass after starting the app:
 
 - `/`: `33-429 ms` total, `119 ms` average
-- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `350 ms-1.145 s` total, `615 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `365 ms-1.567 s` total, `773 ms` average
 
 Immediate warmed rerun:
 
-- `/`: `30-40 ms` total, `35 ms` average
-- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `353-359 ms` total, `357 ms` average
+- `/`: `29-48 ms` total, `38 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `352-430 ms` total, `388 ms` average
 
 ## Asset Snapshot
 
