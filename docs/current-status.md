@@ -30,6 +30,7 @@ The current blocker for Atomic CRM is external, not technical:
 - `bin/benchmark-demo` now captures route timings plus shipped asset sizes from a single command.
 - The local benchmark snapshot has been rerun against the live stack and written back into the docs.
 - README screenshots now show the styled home page and compare route captured through Playwright.
+- Controller coverage now protects homepage demo props, compare persistence, and GitHub error handling.
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
 
@@ -42,7 +43,7 @@ The current blocker for Atomic CRM is external, not technical:
 
 ## What Is Not Done Yet
 
-- No public hosted deployment is configured yet.
+- No public hosted deployment is configured yet; `config/deploy.yml` still contains placeholder server and registry values.
 - No production-environment benchmark has been captured yet.
 - No recorded walkthrough has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
@@ -51,8 +52,8 @@ The current blocker for Atomic CRM is external, not technical:
 
 1. Deploy a public preview so the repo has a live URL, not just local instructions.
 2. Capture a production-style benchmark with production assets and a stable external API scenario.
-3. Add a short screenshot or GIF set to the README for faster top-of-page comprehension.
-4. Add one or two additional comparison examples that are intentionally markdown-heavy.
+3. Replace the placeholder Kamal server and registry settings with real deployment inputs.
+4. Add a short recorded walkthrough or GIF set for faster top-of-page comprehension.
 
 ## Notable Caveat
 
