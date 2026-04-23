@@ -49,6 +49,16 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 - Public deployment: not configured yet
 - Local demo after boot: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
+## Visual Tour
+
+The homepage makes the Rails-owned shell, seeded demo history, and narrow client surface legible immediately:
+
+![Octochangelog homepage on Rails Pro](output/playwright/octochangelog-home.png)
+
+The compare route shows the intended split: a client-side filter island next to server-rendered RSC results:
+
+![Octochangelog compare page with RSC results](output/playwright/octochangelog-compare.png)
+
 ## Quick Start
 
 ### Prerequisites

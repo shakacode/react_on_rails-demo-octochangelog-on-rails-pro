@@ -29,6 +29,7 @@ The current blocker for Atomic CRM is external, not technical:
 - Fresh setup now seeds canonical comparison history so the home page is persuasive immediately.
 - `bin/benchmark-demo` now captures route timings plus shipped asset sizes from a single command.
 - The local benchmark snapshot has been rerun against the live stack and written back into the docs.
+- README screenshots now show the styled home page and compare route captured through Playwright.
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
 
@@ -43,7 +44,7 @@ The current blocker for Atomic CRM is external, not technical:
 
 - No public hosted deployment is configured yet.
 - No production-environment benchmark has been captured yet.
-- No screenshot set or recorded walkthrough has been added yet.
+- No recorded walkthrough has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
 
 ## Good Next Steps
