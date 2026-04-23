@@ -36,6 +36,23 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 - naturally server-heavy: GitHub fetches, markdown parsing, changelog grouping, and rich rendering
 - a clean example of a page where the browser only needs control-surface interactivity
 
+## Demo Portfolio Fit
+
+This repo is strongest as one part of a broader React on Rails Pro demo set:
+
+| Demo | Best for | What it proves |
+| --- | --- | --- |
+| `react_on_rails-demo-octochangelog-on-rails-pro` | Public compare/search pages with external API data and markdown-heavy rendering | Rails can stay in charge while React 19 + RSC stream a server-heavy page with a very small client island |
+| `react_on_rails-hacker-news-app` | Read-heavy feeds, nested comments, and a Next.js-style streaming mental model | Rails can host a multi-route RSC app with Suspense-heavy trees, 404 handling, and HTTP caching |
+| `gumroad-rsc` | Incremental RSC adoption inside a large existing Rails product | React on Rails Pro can justify a bounded React 19 + RSC slice without rewriting the whole application shell |
+| `react_on_rails-demo-atomic-crm` | Internal SaaS workflow pages with linked records and explicit write surfaces | The companion product/workflow story when the audience wants back-office pages instead of public read surfaces |
+
+Use Octochangelog first when the question is:
+
+- Can Rails remain the request shell for a page that is clearly React-shaped?
+- Can React Server Components keep the heavy parsing and rendering path on the server?
+- Can we show a persuasive result without turning the whole page into a large client app?
+
 ## Docs
 
 - [Current Status](docs/current-status.md)
