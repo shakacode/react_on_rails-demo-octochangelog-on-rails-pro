@@ -1,2 +1,3 @@
 web: bin/rails server -p ${PORT:-3000}
 js: bin/shakapacker-watch --watch
+node-renderer: RENDERER_LOG_LEVEL=debug RENDERER_PORT=3800 node client/node-renderer.js

@@ -2,7 +2,8 @@
 
 ## Scope
 
-These notes are for demo positioning and local reproducibility. They are not a production benchmark report.
+These notes are for demo positioning and local reproducibility. They include local development and
+local production-assets measurements. They are not a hosted production benchmark report.
 
 ## Benchmark Command
 
@@ -19,6 +20,7 @@ Useful variants:
 
 ```bash
 BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
+BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo
 BENCHMARK_SKIP_COMPARE=1 bin/benchmark-demo
 BENCHMARK_OUTPUT=json bin/benchmark-demo
 ```
@@ -29,7 +31,7 @@ Notes:
 - `BENCHMARK_SKIP_COMPARE=1` is useful when you only want the homepage timing plus asset sizes
 - the script reports HTTP status codes so a failed external compare path is visible instead of silently folded into the numbers
 
-## Test Setup
+## Development Setup
 
 - Date: April 22, 2026
 - Mode: local development
@@ -51,6 +53,45 @@ Immediate warmed rerun:
 - `/`: `29-48 ms` total, `38 ms` average
 - `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `352-430 ms` total, `388 ms` average
 
+## Production-Assets Setup
+
+- Date: April 23, 2026
+- Mode: local production-assets workflow
+- Startup command: `bin/dev prod --no-open-browser --skip-database-check`
+- Rails server: `http://127.0.0.1:3001`
+- Node renderer: started by `Procfile.dev-prod-assets` on port `3800`
+- Asset mode: `NODE_ENV=production`, `RAILS_ENV=development`
+- GitHub mode: unauthenticated public API
+- Compare sample: `repo=octokit/rest.js&from=22.0.0&to=latest`
+- Measurement command: `BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo`
+
+First benchmark pass after starting `bin/dev prod`:
+
+- `/`: `29-428 ms` total, `115 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `365-686 ms` total, `483 ms` average
+
+Immediate warmed rerun:
+
+- `/`: `27-32 ms` total, `30 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `356-401 ms` total, `380 ms` average
+
+## Docker Production Container
+
+- Date: April 23, 2026
+- Mode: local Docker image built from `Dockerfile`
+- Smoke command: `bin/docker-smoke-test`
+- Runtime shape: Rails plus the React on Rails Pro Node renderer inside one container
+- Base URL: `http://127.0.0.1:3002`
+- Required production secrets: `RAILS_MASTER_KEY`, `RENDERER_PASSWORD`
+- GitHub mode: unauthenticated public API
+- Compare sample: `repo=octokit/rest.js&from=22.0.0&to=latest`
+- Measurement command: `BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo`
+
+Warmed rerun after the container booted successfully:
+
+- `/`: `19-41 ms` total, `26 ms` average
+- `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: `337-363 ms` total, `346 ms` average
+
 ## Asset Snapshot
 
 - `public/packs/js/generated/CompareFiltersStandalone.js`: `1,918` bytes
@@ -64,6 +105,8 @@ Immediate warmed rerun:
 - The compare page is doing real work: GitHub I/O, markdown parsing, grouping, and server rendering.
 - The first benchmark pass is noisier because it pays for cold-path work and external API variance.
 - The warmed compare path is the more useful number for steady-state discussion.
+- The local `bin/dev prod` run lands very close to the warmed development timings because the compare route is dominated by server work and external GitHub latency, not client bundle size.
+- The Docker production container lands in essentially the same steady-state range as `bin/dev prod`, which is the important proof that the packaged deploy path is not where the latency is coming from.
 - The interactive client surface stays small because the heavy parsing/rendering path remains server-side.
 
 ## What The Browser Does Not Need To Download
@@ -90,7 +133,21 @@ Then in another terminal:
 bin/benchmark-demo
 ```
 
+To reproduce the production-assets pass instead:
+
+```bash
+bin/dev prod --no-open-browser --skip-database-check
+BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
+```
+
+To reproduce the Docker production-container pass instead:
+
+```bash
+bin/docker-smoke-test
+BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo
+```
+
 ## Next Performance Step
 
-If this repo needs a stronger performance story, the next useful step is a production-style benchmark with
-production assets and a stable hosted deployment, not more local curl samples.
+If this repo needs a stronger performance story, the next useful step is a hosted benchmark with
+stable deployment inputs and a repeatable external API scenario, not more local curl samples.

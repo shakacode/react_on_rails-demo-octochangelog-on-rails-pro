@@ -74,3 +74,12 @@ jobs:
         env:
           RAILS_ENV: test
         run: bin/rails test
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Smoke test the production container
+        run: bin/docker-smoke-test

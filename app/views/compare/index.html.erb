@@ -21,11 +21,20 @@
 
   <div class="octo-compare-layout">
     <div class="octo-sidebar-column">
-      <%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: false) %>
+      <%= react_component(
+            "CompareFiltersStandalone",
+            props: @compare_filters_props,
+            prerender: false,
+            id: "octochangelog-compare-filters"
+          ) %>
     </div>
 
     <div class="octo-results-column">
-      <%= stream_react_component("OctochangelogCompareResultsPage", props: @compare_results_props) %>
+      <%= stream_react_component(
+            "OctochangelogCompareResultsPage",
+            props: @compare_results_props,
+            id: "octochangelog-compare-results"
+          ) %>
     </div>
   </div>
 </main>

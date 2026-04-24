@@ -1,0 +1,32 @@
+#!/bin/bash
+set -euo pipefail
+
+RENDERER_PORT="${RENDERER_PORT:-3800}"
+RENDERER_LOG_LEVEL="${RENDERER_LOG_LEVEL:-info}"
+NODE_ENV="${NODE_ENV:-production}"
+
+node client/node-renderer.js &
+renderer_pid=$!
+
+./bin/thrust ./bin/rails server &
+web_pid=$!
+
+shutdown() {
+  trap - EXIT INT TERM
+
+  for pid in "${web_pid:-}" "${renderer_pid:-}"; do
+    if [ -n "${pid:-}" ] && kill -0 "$pid" 2>/dev/null; then
+      kill "$pid" 2>/dev/null || true
+    fi
+  done
+
+  wait "${web_pid:-}" 2>/dev/null || true
+  wait "${renderer_pid:-}" 2>/dev/null || true
+}
+
+trap shutdown EXIT INT TERM
+
+wait -n "$web_pid" "$renderer_pid"
+status=$?
+shutdown
+exit $status

@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-As of April 22, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, canonical demo seed data, and repeatable local benchmark tooling.
+As of April 23, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, canonical demo seed data, and repeatable local benchmark tooling.
 
 ## Companion Demo Update
 
@@ -29,10 +29,15 @@ The current blocker for Atomic CRM is external, not technical:
 - Fresh setup now seeds canonical comparison history so the home page is persuasive immediately.
 - `bin/benchmark-demo` now captures route timings plus shipped asset sizes from a single command.
 - The local benchmark snapshot has been rerun against the live stack and written back into the docs.
+- `bin/dev prod` now starts the node renderer correctly, points at `/`, and supports a local production-assets benchmark pass on port `3001`.
+- `bin/dev static` now starts the node renderer correctly for RSC pages.
+- The Docker image now installs Node, boots Rails and the node renderer together, and serves both `/` and `/compare` successfully in production mode.
+- `bin/docker-smoke-test` now gives the repo a repeatable production-container verification path.
 - README screenshots now show the styled home page and compare route captured through Playwright.
 - Controller coverage now protects homepage demo props, compare persistence, and GitHub error handling.
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
+- GitHub Actions now also smoke-test the production Docker image so the deploy path does not regress silently.
 
 ## What The Demo Already Proves Well
 
@@ -44,15 +49,15 @@ The current blocker for Atomic CRM is external, not technical:
 ## What Is Not Done Yet
 
 - No public hosted deployment is configured yet; `config/deploy.yml` still contains placeholder server and registry values.
-- No production-environment benchmark has been captured yet.
+- No hosted production benchmark has been captured yet.
 - No recorded walkthrough has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
 
 ## Good Next Steps
 
 1. Deploy a public preview so the repo has a live URL, not just local instructions.
-2. Capture a production-style benchmark with production assets and a stable external API scenario.
-3. Replace the placeholder Kamal server and registry settings with real deployment inputs.
+2. Replace the placeholder Kamal server and registry settings with real deployment inputs.
+3. Capture a hosted benchmark with real deployment inputs and a stable external API scenario.
 4. Add a short recorded walkthrough or GIF set for faster top-of-page comprehension.
 
 ## Notable Caveat

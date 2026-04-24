@@ -4,6 +4,11 @@ const { reactOnRailsProNodeRenderer, parseWorkersCount } = require('react-on-rai
 const { env } = process;
 const configuredWorkersCount =
   parseWorkersCount(env.RENDERER_WORKERS_COUNT) ?? parseWorkersCount(env.NODE_RENDERER_CONCURRENCY);
+const rendererPassword = env.RENDERER_PASSWORD || (env.RAILS_ENV === 'production' ? null : 'devPassword');
+
+if (!rendererPassword) {
+  throw new Error('RENDERER_PASSWORD must be set when RAILS_ENV=production');
+}
 
 const config = {
   serverBundleCachePath: path.resolve(__dirname, '../.node-renderer-bundles'),
@@ -11,7 +16,7 @@ const config = {
   logLevel: env.RENDERER_LOG_LEVEL || 'info',
 
   // See value in /config/initializers/react_on_rails_pro.rb
-  password: env.RENDERER_PASSWORD || 'devPassword',
+  password: rendererPassword,
 
   // Number of Node.js worker threads for SSR rendering
   // Set RENDERER_WORKERS_COUNT env var to override (e.g., for production tuning)

@@ -19,6 +19,7 @@ This demo is useful when you want to show that React on Rails Pro can:
 - use React 19 + RSC for data-heavy, server-heavy pages without giving up Rails conventions
 - keep the client surface intentionally small while still delivering a rich React UI
 - handle real external API work, not just toy todo-list interactions
+- ship a production-style container that boots Rails and the Node renderer together
 - support a clean server/client split on a page that obviously benefits from it
 
 It is a good fit for demos, technical evaluation, and positioning conversations with teams that:
@@ -107,6 +108,18 @@ If you use `overmind`, `bin/dev` is also available.
 `bin/setup` now seeds canonical comparison history, so the homepage stats and recent activity are
 useful immediately after a fresh checkout.
 
+### Container Smoke Test
+
+For a production-style local verification pass:
+
+```bash
+bin/docker-smoke-test
+```
+
+That builds the app image, starts Rails plus the Node renderer inside the container, and verifies
+that both `/` and `/compare` respond successfully on [http://127.0.0.1:3002](http://127.0.0.1:3002).
+Real deployments must set `RENDERER_PASSWORD`; the smoke script injects a local value automatically.
+
 ### Optional GitHub OAuth
 
 For higher GitHub API limits, set these in `.env`:
@@ -122,6 +135,9 @@ Without them, the app still works against public GitHub data.
 
 ```bash
 bin/dev
+bin/dev static
+bin/dev prod
+bin/docker-smoke-test
 bin/shakapacker
 bin/benchmark-demo
 bin/rails react_on_rails:generate_packs
@@ -217,12 +233,16 @@ Concretely, it gives a credible answer for surfaces like:
 
 ## Performance Snapshot
 
-These numbers are local development measurements from April 22, 2026 in unauthenticated GitHub mode.
+These numbers are local measurements in unauthenticated GitHub mode.
 They are useful as a demo baseline, not as a universal production claim.
 
-- warmed `/`: ~29-48 ms total
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~352-430 ms total
-- first compare burst after restart: ~773 ms average with a ~1.567 s max on a sampled run
+- warmed `/` in standard dev mode on April 22, 2026: ~29-48 ms total
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest` in standard dev mode on April 22, 2026: ~352-430 ms total
+- first compare burst after restart in standard dev mode: ~773 ms average with a ~1.567 s max on a sampled run
+- warmed `/` in `bin/dev prod` mode on April 23, 2026: ~27-32 ms total
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest` in `bin/dev prod` mode on April 23, 2026: ~356-401 ms total
+- warmed `/` in the local Docker production container on April 23, 2026: ~19-41 ms total
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest` in the local Docker production container on April 23, 2026: ~337-363 ms total
 - `public/packs/js/generated/CompareFiltersStandalone.js`: 1,918 bytes
 - `public/packs/js/client0.js`: 22,012 bytes
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes
@@ -233,6 +253,8 @@ Interpretation:
 - the landing page is effectively Rails-fast after warmup
 - the compare page pays for real GitHub I/O plus markdown parsing and grouped rendering
 - the first compare burst still shows the cold-path cost clearly
+- production-optimized assets do not materially change the steady-state compare latency in local mode because GitHub I/O dominates the request
+- the containerized production path lands in the same range as `bin/dev prod`, so the deploy packaging is not introducing a visible latency cliff locally
 - the interactive island stays small
 - the heavy release-note processing remains on the server instead of inflating browser JavaScript
 
