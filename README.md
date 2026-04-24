@@ -118,7 +118,7 @@ bin/docker-smoke-test
 
 That builds the app image, starts Rails plus the Node renderer inside the container, and verifies
 that both `/` and `/compare` respond successfully on [http://127.0.0.1:3002](http://127.0.0.1:3002).
-Real deployments must set `RENDERER_PASSWORD`; the smoke script injects a local value automatically.
+Real deployments must set `RENDERER_PASSWORD`; the smoke script injects disposable runtime secrets automatically so CI and local smoke runs do not depend on `config/master.key`.
 
 ### Optional GitHub OAuth
 

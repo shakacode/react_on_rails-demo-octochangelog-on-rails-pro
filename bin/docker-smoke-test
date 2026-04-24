@@ -27,7 +27,7 @@ fi
 docker run -d --rm \
   --name "$CONTAINER_NAME" \
   -p "${HOST_PORT}:80" \
-  -e RAILS_MASTER_KEY="$(cat config/master.key)" \
+  -e SECRET_KEY_BASE_DUMMY=1 \
   -e RENDERER_PASSWORD="$RENDERER_PASSWORD" \
   "$IMAGE_TAG" >/dev/null
 
