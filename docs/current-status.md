@@ -33,6 +33,8 @@ The current blocker for Atomic CRM is external, not technical:
 - `bin/dev static` now starts the node renderer correctly for RSC pages.
 - The Docker image now installs Node, boots Rails and the node renderer together, and serves both `/` and `/compare` successfully in production mode.
 - `bin/docker-smoke-test` now gives the repo a repeatable production-container verification path.
+- `bin/deploy-readiness` now makes the remaining Kamal hosting inputs explicit before anyone attempts a deploy.
+- Kamal asset bridging now points at `/rails/public/packs`, matching the Shakapacker packs actually served by the app.
 - README screenshots now show the styled home page and compare route captured through Playwright.
 - Controller coverage now protects homepage demo props, compare persistence, and GitHub error handling.
 - The default README, positioning notes, demo notes, and performance notes are in place.
@@ -48,7 +50,7 @@ The current blocker for Atomic CRM is external, not technical:
 
 ## What Is Not Done Yet
 
-- No public hosted deployment is configured yet; `config/deploy.yml` still contains placeholder server and registry values.
+- No public hosted deployment is configured yet; `config/deploy.yml` still contains placeholder server and registry values, and `bin/deploy-readiness` reports those as blockers.
 - No hosted production benchmark has been captured yet.
 - No recorded walkthrough has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.

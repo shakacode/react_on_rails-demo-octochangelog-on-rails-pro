@@ -151,3 +151,5 @@ BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo
 
 If this repo needs a stronger performance story, the next useful step is a hosted benchmark with
 stable deployment inputs and a repeatable external API scenario, not more local curl samples.
+Use `bin/deploy-readiness` before that hosted run so placeholder Kamal inputs do not masquerade as
+performance work.

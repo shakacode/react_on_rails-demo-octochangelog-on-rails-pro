@@ -1,0 +1,104 @@
+#!/bin/bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+ruby <<'RUBY'
+require "yaml"
+
+config = YAML.load_file("config/deploy.yml")
+problems = []
+warnings = []
+passes = []
+
+def check(condition, message, collection)
+  collection << message unless condition
+end
+
+web_hosts = Array(config.dig("servers", "web"))
+registry_server = config.dig("registry", "server").to_s
+image = config["image"].to_s
+env_secrets = Array(config.dig("env", "secret"))
+asset_path = config["asset_path"].to_s
+builder_arch = config.dig("builder", "arch").to_s
+
+if web_hosts.empty?
+  problems << "Add at least one production web host under servers.web."
+elsif web_hosts.include?("192.168.0.1")
+  problems << "Replace the placeholder servers.web host 192.168.0.1."
+else
+  passes << "servers.web is no longer using the generator placeholder."
+end
+
+if registry_server.empty? || registry_server == "localhost:5555"
+  problems << "Replace registry.server with the real image registry."
+else
+  passes << "registry.server is configured."
+end
+
+if image.empty? || image == "ror_tanstack"
+  warnings << "Set image to the final registry image name before public deploy."
+else
+  passes << "image is customized."
+end
+
+%w[RAILS_MASTER_KEY RENDERER_PASSWORD].each do |secret|
+  check(env_secrets.include?(secret), "Add #{secret} to env.secret.", problems)
+end
+
+if asset_path == "/rails/public/packs"
+  passes << "asset_path points at Shakapacker packs."
+else
+  problems << "Set asset_path to /rails/public/packs so Kamal bridges fingerprinted packs."
+end
+
+if builder_arch == "amd64"
+  passes << "builder.arch is pinned to amd64 for server deploys."
+else
+  warnings << "builder.arch is #{builder_arch.empty? ? "unset" : builder_arch}; confirm it matches the target server."
+end
+
+if File.exist?(".kamal/secrets")
+  secrets_body = File.read(".kamal/secrets")
+  %w[RAILS_MASTER_KEY RENDERER_PASSWORD].each do |secret|
+    if secrets_body.match?(/^\s*#{Regexp.escape(secret)}=/)
+      passes << ".kamal/secrets defines #{secret} without committing the raw value."
+    else
+      problems << "Teach .kamal/secrets how to provide #{secret}."
+    end
+  end
+else
+  problems << "Add .kamal/secrets before deploying."
+end
+
+dockerfile = File.read("Dockerfile")
+if dockerfile.include?('CMD ["./bin/docker-start"]')
+  passes << "Docker default command starts Rails and the node renderer."
+else
+  problems << "Dockerfile must default to bin/docker-start so RSC routes have a renderer."
+end
+
+puts "Deployment readiness"
+puts
+
+unless passes.empty?
+  puts "Ready checks:"
+  passes.each { |message| puts "- #{message}" }
+  puts
+end
+
+unless warnings.empty?
+  puts "Warnings:"
+  warnings.each { |message| puts "- #{message}" }
+  puts
+end
+
+unless problems.empty?
+  puts "Blockers:"
+  problems.each { |message| puts "- #{message}" }
+  puts
+  exit 1
+end
+
+puts "No deployment blockers detected."
+RUBY

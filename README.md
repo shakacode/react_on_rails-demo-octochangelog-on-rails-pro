@@ -58,6 +58,7 @@ Use Octochangelog first when the question is:
 
 - [Current Status](docs/current-status.md)
 - [Demo Guide](docs/demo-guide.md)
+- [Deployment Readiness](docs/deployment-readiness.md)
 - [Atomic CRM Migration Plan and Status](docs/atomic-crm-migration-plan.md)
 - [Positioning Notes](docs/positioning-notes.md)
 - [Performance Notes](docs/performance-notes.md)
@@ -137,6 +138,7 @@ Without them, the app still works against public GitHub data.
 bin/dev
 bin/dev static
 bin/dev prod
+bin/deploy-readiness
 bin/docker-smoke-test
 bin/shakapacker
 bin/benchmark-demo
