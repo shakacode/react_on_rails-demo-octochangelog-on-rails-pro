@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RENDERER_PORT="${RENDERER_PORT:-3800}"
-RENDERER_LOG_LEVEL="${RENDERER_LOG_LEVEL:-info}"
-NODE_ENV="${NODE_ENV:-production}"
+export RENDERER_PORT="${RENDERER_PORT:-3800}"
+export RENDERER_LOG_LEVEL="${RENDERER_LOG_LEVEL:-info}"
+export NODE_ENV="${NODE_ENV:-production}"
 
 node client/node-renderer.js &
 renderer_pid=$!
