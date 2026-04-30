@@ -7,7 +7,9 @@ ruby <<'RUBY'
 require "yaml"
 
 config = YAML.load_file("config/deploy.yml")
+allow_external_blockers = ENV["DEPLOY_READINESS_ALLOW_EXTERNAL_BLOCKERS"] == "1"
 problems = []
+external_blockers = []
 warnings = []
 passes = []
 
@@ -23,15 +25,15 @@ asset_path = config["asset_path"].to_s
 builder_arch = config.dig("builder", "arch").to_s
 
 if web_hosts.empty?
-  problems << "Add at least one production web host under servers.web."
+  external_blockers << "Add at least one production web host under servers.web."
 elsif web_hosts.include?("192.168.0.1")
-  problems << "Replace the placeholder servers.web host 192.168.0.1."
+  external_blockers << "Replace the placeholder servers.web host 192.168.0.1."
 else
   passes << "servers.web is no longer using the generator placeholder."
 end
 
 if registry_server.empty? || registry_server == "localhost:5555"
-  problems << "Replace registry.server with the real image registry."
+  external_blockers << "Replace registry.server with the real image registry."
 else
   passes << "registry.server is configured."
 end
@@ -79,6 +81,7 @@ else
 end
 
 puts "Deployment readiness"
+puts "Mode: #{allow_external_blockers ? "CI shape check; known external blockers allowed" : "strict deploy gate"}"
 puts
 
 unless passes.empty?
@@ -93,6 +96,13 @@ unless warnings.empty?
   puts
 end
 
+unless external_blockers.empty?
+  heading = allow_external_blockers ? "Known external blockers allowed in this mode:" : "External blockers:"
+  puts heading
+  external_blockers.each { |message| puts "- #{message}" }
+  puts
+end
+
 unless problems.empty?
   puts "Blockers:"
   problems.each { |message| puts "- #{message}" }
@@ -100,5 +110,13 @@ unless problems.empty?
   exit 1
 end
 
-puts "No deployment blockers detected."
+if external_blockers.any? && !allow_external_blockers
+  exit 1
+end
+
+if external_blockers.any?
+  puts "No repo-owned deployment blockers detected."
+else
+  puts "No deployment blockers detected."
+end
 RUBY

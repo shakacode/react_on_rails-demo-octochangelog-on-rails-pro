@@ -20,15 +20,21 @@ Useful variants:
 
 ```bash
 BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
-BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo
+BENCHMARK_BASE_URL=http://127.0.0.1:3003 bin/benchmark-demo
 BENCHMARK_SKIP_COMPARE=1 bin/benchmark-demo
 BENCHMARK_OUTPUT=json bin/benchmark-demo
+BENCHMARK_OUTPUT=markdown bin/benchmark-demo
+bin/docker-benchmark
+BUILD_IMAGE=0 BENCHMARK_OUTPUT=markdown bin/docker-benchmark
 ```
 
 Notes:
 
 - the default compare route still depends on live GitHub API latency and rate limits
 - `BENCHMARK_SKIP_COMPARE=1` is useful when you only want the homepage timing plus asset sizes
+- `BENCHMARK_OUTPUT=markdown` emits a docs-ready table for README or PR updates
+- `bin/docker-benchmark` starts the production image, runs cold and warmed benchmark passes, and
+  cleans up the container afterward
 - the script reports HTTP status codes so a failed external compare path is visible instead of silently folded into the numbers
 
 ## Development Setup
@@ -80,12 +86,14 @@ Immediate warmed rerun:
 - Date: April 23, 2026
 - Mode: local Docker image built from `Dockerfile`
 - Smoke command: `bin/docker-smoke-test`
+- Benchmark command: `bin/docker-benchmark`
 - Runtime shape: Rails plus the React on Rails Pro Node renderer inside one container
-- Base URL: `http://127.0.0.1:3002`
+- Benchmark wrapper base URL: `http://127.0.0.1:3003`
 - Required production secrets: `RAILS_MASTER_KEY`, `RENDERER_PASSWORD`
 - GitHub mode: unauthenticated public API
 - Compare sample: `repo=octokit/rest.js&from=22.0.0&to=latest`
-- Measurement command: `BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo`
+- Current measurement command: `bin/docker-benchmark`
+- The April 23 snapshot below was captured with a manually started container on port `3002`.
 
 Warmed rerun after the container booted successfully:
 
@@ -106,7 +114,7 @@ Warmed rerun after the container booted successfully:
 - The first benchmark pass is noisier because it pays for cold-path work and external API variance.
 - The warmed compare path is the more useful number for steady-state discussion.
 - The local `bin/dev prod` run lands very close to the warmed development timings because the compare route is dominated by server work and external GitHub latency, not client bundle size.
-- The Docker production container lands in essentially the same steady-state range as `bin/dev prod`, which is the important proof that the packaged deploy path is not where the latency is coming from.
+- The April 23 Docker production-container snapshot landed in essentially the same steady-state range as `bin/dev prod`, which is the important proof that the packaged deploy path was not where that sampled latency came from.
 - The interactive client surface stays small because the heavy parsing/rendering path remains server-side.
 
 ## What The Browser Does Not Need To Download
@@ -143,9 +151,12 @@ BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
 To reproduce the Docker production-container pass instead:
 
 ```bash
-bin/docker-smoke-test
-BENCHMARK_BASE_URL=http://127.0.0.1:3002 bin/benchmark-demo
+bin/docker-benchmark
+BUILD_IMAGE=0 BENCHMARK_OUTPUT=markdown bin/docker-benchmark
 ```
+
+`bin/docker-smoke-test` is intentionally a pass/fail verification command and removes its container
+on exit. Use `bin/docker-benchmark` when you need route timings from the production image.
 
 ## Next Performance Step
 

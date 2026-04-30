@@ -121,6 +121,15 @@ That builds the app image, starts Rails plus the Node renderer inside the contai
 that both `/` and `/compare` respond successfully on [http://127.0.0.1:3002](http://127.0.0.1:3002).
 Real deployments must set `RENDERER_PASSWORD`; the smoke script injects disposable runtime secrets automatically so CI and local smoke runs do not depend on `config/master.key`.
 
+For a production-container timing pass, use:
+
+```bash
+bin/docker-benchmark
+```
+
+That builds the same image, starts it on [http://127.0.0.1:3003](http://127.0.0.1:3003),
+runs cold and warmed benchmark passes, and then removes the container.
+
 ### Optional GitHub OAuth
 
 For higher GitHub API limits, set these in `.env`:
@@ -139,15 +148,24 @@ bin/dev
 bin/dev static
 bin/dev prod
 bin/deploy-readiness
+DEPLOY_READINESS_ALLOW_EXTERNAL_BLOCKERS=1 bin/deploy-readiness
 bin/docker-smoke-test
+bin/docker-benchmark
 bin/shakapacker
 bin/benchmark-demo
+BENCHMARK_OUTPUT=markdown bin/benchmark-demo
 bin/rails react_on_rails:generate_packs
 bin/rubocop
 bin/brakeman --no-pager
 bin/bundler-audit
 bin/rails test
 ```
+
+Use `bin/deploy-readiness` as the strict deploy gate. It intentionally fails until real host and
+registry values replace the placeholders in `config/deploy.yml`. Use
+`DEPLOY_READINESS_ALLOW_EXTERNAL_BLOCKERS=1` for non-deploy proof runs that should still fail on
+repo-owned deploy regressions without pretending the external infrastructure decision has already
+been made.
 
 ## Routes
 

@@ -49,6 +49,20 @@ interaction surface, pivot to Atomic CRM instead.
 - "OAuth, sessions, redirects, persistence, and routing are still just Rails."
 - "This is a better fit for server-heavy pages than pretending every surface needs to become a full SPA."
 
+## Proof Commands Before A Demo
+
+Run these when you want to confirm the repo is still demo-ready before a walkthrough:
+
+```bash
+bin/rails test
+bin/docker-smoke-test
+DEPLOY_READINESS_ALLOW_EXTERNAL_BLOCKERS=1 bin/deploy-readiness
+BUILD_IMAGE=0 BENCHMARK_OUTPUT=markdown bin/docker-benchmark
+```
+
+Use the strict `bin/deploy-readiness` command before claiming deploy readiness. It should keep
+failing until the real public host and image registry are configured.
+
 ## When To Pivot To Atomic CRM
 
 Use Octochangelog first when the prospect wants to see:

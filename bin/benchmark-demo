@@ -16,6 +16,9 @@ BASE_URL = ENV.fetch("BENCHMARK_BASE_URL", "http://127.0.0.1:3000")
 COMPARE_PATH = ENV.fetch("BENCHMARK_COMPARE_PATH", "/compare?repo=octokit/rest.js&from=22.0.0&to=latest")
 OUTPUT = ENV.fetch("BENCHMARK_OUTPUT", "text")
 SKIP_COMPARE = ENV["BENCHMARK_SKIP_COMPARE"] == "1"
+VALID_OUTPUTS = %w[text json markdown].freeze
+
+abort "BENCHMARK_OUTPUT must be one of: #{VALID_OUTPUTS.join(', ')}." unless VALID_OUTPUTS.include?(OUTPUT)
 
 def positive_integer_env(name, default)
   value = Integer(ENV.fetch(name, default))
@@ -94,6 +97,18 @@ def asset_snapshot
   end
 end
 
+def milliseconds(seconds)
+  "#{(seconds * 1000).round} ms"
+end
+
+def markdown_summary(summary)
+  [
+    milliseconds(summary.fetch(:min)),
+    milliseconds(summary.fetch(:avg)),
+    milliseconds(summary.fetch(:max))
+  ].join(" / ")
+end
+
 report = {
   generated_at: Time.now.iso8601,
   base_url: BASE_URL,
@@ -107,6 +122,34 @@ end
 
 if OUTPUT == "json"
   puts JSON.pretty_generate(report)
+  exit 0
+end
+
+if OUTPUT == "markdown"
+  puts "## Benchmark Snapshot"
+  puts
+  puts "- Base URL: `#{report.fetch(:base_url)}`"
+  puts "- Generated at: `#{report.fetch(:generated_at)}`"
+  puts
+  puts "| Route | Runs | HTTP codes | Start transfer min / avg / max | Total min / avg / max |"
+  puts "| --- | ---: | --- | --- | --- |"
+  report.fetch(:routes).each do |route|
+    row = [
+      "`#{route.fetch(:path)}`",
+      route.fetch(:runs),
+      "`#{route.fetch(:http_codes).join(', ')}`",
+      markdown_summary(route.fetch(:time_starttransfer)),
+      markdown_summary(route.fetch(:time_total))
+    ]
+    puts "| #{row.join(' | ')} |"
+  end
+  puts
+  puts "| Asset | Bytes |"
+  puts "| --- | ---: |"
+  report.fetch(:assets).each do |asset|
+    size_label = asset.fetch(:bytes)&.to_s || "missing"
+    puts "| `#{asset.fetch(:path)}` | #{size_label} |"
+  end
   exit 0
 end
 

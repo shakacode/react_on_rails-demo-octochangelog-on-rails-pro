@@ -23,6 +23,16 @@ bin/deploy-readiness
 The command intentionally exits non-zero while the repo still has placeholder deployment inputs.
 That makes the external blockers visible before anyone tries `bin/kamal deploy`.
 
+Use shape-check mode when you want a non-deploy proof run:
+
+```bash
+DEPLOY_READINESS_ALLOW_EXTERNAL_BLOCKERS=1 bin/deploy-readiness
+```
+
+That mode still fails for repo-owned deploy regressions, such as missing secrets, a broken
+Shakapacker asset path, or a Docker command that no longer starts the renderer. It only allows the
+known external blockers that require final host and registry decisions.
+
 ## External Inputs Still Needed
 
 - Production host or hosts for `servers.web`.

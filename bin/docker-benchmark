@@ -1,0 +1,71 @@
+#!/bin/bash
+set -euo pipefail
+
+IMAGE_TAG="${IMAGE_TAG:-ror-tanstack:smoke}"
+CONTAINER_NAME="${CONTAINER_NAME:-ror-tanstack-benchmark}"
+HOST_PORT="${HOST_PORT:-3003}"
+BASE_URL="${BASE_URL:-http://127.0.0.1:${HOST_PORT}}"
+BUILD_IMAGE="${BUILD_IMAGE:-1}"
+RENDERER_PASSWORD="${RENDERER_PASSWORD:-benchmarkPassword}"
+BENCHMARK_OUTPUT="${BENCHMARK_OUTPUT:-text}"
+BENCHMARK_PASSES="${BENCHMARK_PASSES:-2}"
+
+if ! [[ "$BENCHMARK_PASSES" =~ ^[1-9][0-9]*$ ]]; then
+  echo "BENCHMARK_PASSES must be a positive integer." >&2
+  exit 1
+fi
+
+if [ "$BENCHMARK_OUTPUT" = "json" ] && [ "$BENCHMARK_PASSES" != "1" ]; then
+  echo "Set BENCHMARK_PASSES=1 when BENCHMARK_OUTPUT=json so stdout remains valid JSON." >&2
+  exit 1
+fi
+
+cleanup() {
+  docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+}
+
+trap cleanup EXIT
+
+cleanup
+
+if [ "$BUILD_IMAGE" = "1" ]; then
+  docker build -t "$IMAGE_TAG" .
+fi
+
+docker run -d --rm \
+  --name "$CONTAINER_NAME" \
+  -p "${HOST_PORT}:80" \
+  -e SECRET_KEY_BASE_DUMMY=1 \
+  -e RENDERER_PASSWORD="$RENDERER_PASSWORD" \
+  "$IMAGE_TAG" >/dev/null
+
+for attempt in $(seq 1 40); do
+  if curl -fsS "$BASE_URL/" >/dev/null 2>&1; then
+    break
+  fi
+
+  if [ "$attempt" -eq 40 ]; then
+    echo "Container did not become ready at $BASE_URL" >&2
+    docker logs "$CONTAINER_NAME" >&2 || true
+    exit 1
+  fi
+
+  sleep 1
+done
+
+for pass in $(seq 1 "$BENCHMARK_PASSES"); do
+  if [ "$BENCHMARK_PASSES" != "1" ]; then
+    if [ "$BENCHMARK_OUTPUT" = "markdown" ]; then
+      echo "### Benchmark Pass ${pass}"
+    else
+      echo "Benchmark pass ${pass} of ${BENCHMARK_PASSES}"
+    fi
+    echo
+  fi
+
+  BENCHMARK_BASE_URL="$BASE_URL" BENCHMARK_OUTPUT="$BENCHMARK_OUTPUT" bin/benchmark-demo
+
+  if [ "$pass" != "$BENCHMARK_PASSES" ]; then
+    echo
+  fi
+done

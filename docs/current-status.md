@@ -28,12 +28,14 @@ The current blocker for Atomic CRM is external, not technical:
 - Markdown-heavy release notes are parsed and grouped on the server.
 - Fresh setup now seeds canonical comparison history so the home page is persuasive immediately.
 - `bin/benchmark-demo` now captures route timings plus shipped asset sizes from a single command.
+- `bin/docker-benchmark` now runs the same timing snapshot against the production container with cold and warmed passes.
 - The local benchmark snapshot has been rerun against the live stack and written back into the docs.
 - `bin/dev prod` now starts the node renderer correctly, points at `/`, and supports a local production-assets benchmark pass on port `3001`.
 - `bin/dev static` now starts the node renderer correctly for RSC pages.
 - The Docker image now installs Node, boots Rails and the node renderer together, and serves both `/` and `/compare` successfully in production mode.
 - `bin/docker-smoke-test` now gives the repo a repeatable production-container verification path.
 - `bin/deploy-readiness` now makes the remaining Kamal hosting inputs explicit before anyone attempts a deploy.
+- `bin/deploy-readiness` supports an external-blocker-tolerant mode for non-deploy proof runs while placeholder host and registry values remain visible.
 - Kamal asset bridging now points at `/rails/public/packs`, matching the Shakapacker packs actually served by the app.
 - README screenshots now show the styled home page and compare route captured through Playwright.
 - Controller coverage now protects homepage demo props, compare persistence, and GitHub error handling.
