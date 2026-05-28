@@ -11,6 +11,13 @@ specific shape that React on Rails Pro handles well:
 - Only a thin client island hydrates in the browser for search and version selection.
 - Markdown parsing, release grouping, and syntax highlighting stay on the server.
 
+## See Also
+
+If you are starting greenfield, see the
+[React on Rails Starter TanStack](https://github.com/shakacode/react-on-rails-starter-tanstack).
+This demo shows the migration path into the same Rails, React on Rails Pro,
+React 19, RSC, and TanStack-oriented stack.
+
 ## What This Repo Proves
 
 This demo is useful when you want to show that React on Rails Pro can:
