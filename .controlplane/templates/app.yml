@@ -20,6 +20,9 @@ spec:
       value: /rails/tmp/.node-renderer-bundles
     - name: SOLID_QUEUE_IN_PUMA
       value: "true"
+    # Review apps run pull request code. Values mounted through cpln://secret
+    # become readable by that code after the workload starts, so review-app
+    # secret references must use review/staging-specific values.
     # Required runtime secret:
     # - name: RAILS_MASTER_KEY
     #   value: cpln://secret/octochangelog-on-rails-pro-secrets/RAILS_MASTER_KEY

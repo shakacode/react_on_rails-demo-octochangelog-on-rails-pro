@@ -39,6 +39,11 @@ Optional:
 These can be added either as direct GVC env vars or via a Control Plane secret
 store referenced from `templates/app.yml`.
 
+Review apps run pull request code. Do not mount a production `RAILS_MASTER_KEY`
+or production OAuth credentials into review apps. Use review/staging-specific
+credentials, or direct review-only env values, because values mounted through
+`cpln://secret/...` can be read by app code after the workload starts.
+
 ## Local cpflow Flow
 
 Typical setup:
@@ -68,3 +73,8 @@ Optional:
 
 - `STAGING_APP_BRANCH=main`
 - `PRIMARY_WORKLOAD=rails`
+
+Use a staging/review `CPLN_TOKEN_STAGING` that cannot access production Control
+Plane resources. In public repositories, review-app deploys skip fork PR heads
+because Docker builds use repository secrets. If a forked change needs a review
+app, first move the reviewed change to a trusted branch in this repository.
