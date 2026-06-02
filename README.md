@@ -46,6 +46,7 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 ## Docs
 
 - [Current Status](docs/current-status.md)
+- [Control Plane Deployment](.controlplane/readme.md)
 - [Demo Guide](docs/demo-guide.md)
 - [Next Demo Roadmap](docs/next-demo-roadmap.md)
 - [Positioning Notes](docs/positioning-notes.md)
@@ -54,6 +55,7 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 ## Live Demo
 
 - Public deployment: not configured yet
+  The repo now includes `.controlplane/` plus `cpflow-*` GitHub Actions for review apps, staging deploys, and manual production promotion.
 - Local demo after boot: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 ## Screenshots
@@ -213,6 +215,12 @@ They are useful as a demo baseline, not as a universal production claim.
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes
 - `public/packs/css/application.css`: 13,648 bytes
 
+A production-like Docker smoke test on April 15, 2026 also verified the split-workload runtime shape used by the Control Plane scaffolding:
+
+- first `/` after boot: ~159 ms total
+- warmed `/`: ~23-27 ms total
+- sampled `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~284 ms, then ~323 ms and ~1.28 s total
+
 Interpretation:
 
 - the landing page is effectively Rails-fast after warmup
@@ -258,6 +266,17 @@ Verified on GitHub Actions:
 - `lint`
 - `scan_ruby`
 - `test`
+
+## Deployment
+
+This repo now includes Control Plane deployment scaffolding:
+
+- `.controlplane/` contains the app, volume, and workload templates
+- `.controlplane/templates/renderer.yml` runs the internal React on Rails Pro Node renderer workload
+- `release_script.sh` prepares the SQLite-backed production databases before image cutover
+- `.github/workflows/cpflow-*.yml` adds review apps, staging deploys, production promotion, and stale-review-app cleanup
+
+See [Control Plane Deployment](.controlplane/readme.md) for required GitHub secrets and variables plus the expected app names.
 
 ## See Also
 

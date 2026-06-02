@@ -1,0 +1,60 @@
+# Keys beginning with "cpln_" correspond to your settings in Control Plane.
+#
+# This demo uses the repository root Dockerfile and mounts `/rails/storage`
+# so SQLite, Solid Cache, Solid Queue, Action Cable, and Thruster state persist.
+
+allow_org_override_by_env: true
+allow_app_override_by_env: true
+
+aliases:
+  common: &common
+    cpln_org: shakacode-open-source-examples-staging
+    default_location: aws-us-east-2
+
+    setup_app_templates:
+      - app
+      - storage
+      - rails
+      - renderer
+
+    # Create the app identity and app secret policy so workloads can reveal
+    # cpln://secret references from GVC env.
+    skip_secrets_setup: false
+
+    one_off_workload: rails
+    app_workloads:
+      - rails
+      - renderer
+
+    # Use the repo's real production Dockerfile rather than a second copy in .controlplane/.
+    dockerfile: ../Dockerfile
+
+    # The generated review/staging/production workflows will run this when present.
+    release_script: release_script.sh
+
+    stale_app_image_deployed_days: 5
+    image_retention_days: 7
+
+  staging_review: &staging_review
+    <<: *common
+    # Review apps run pull request code, so they share staging-only secrets.
+    secrets_name: octochangelog-on-rails-pro-staging-secrets
+
+  production: &production
+    <<: *common
+    allow_org_override_by_env: false
+    allow_app_override_by_env: false
+    cpln_org: shakacode-open-source-examples-production
+    secrets_name: octochangelog-on-rails-pro-production-secrets
+    upstream: octochangelog-on-rails-pro-staging
+
+apps:
+  octochangelog-on-rails-pro-staging:
+    <<: *staging_review
+
+  octochangelog-on-rails-pro-review-pr:
+    <<: *staging_review
+    match_if_app_name_starts_with: true
+
+  octochangelog-on-rails-pro-production:
+    <<: *production
