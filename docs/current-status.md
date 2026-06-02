@@ -13,6 +13,7 @@ As of April 15, 2026, this repo is no longer a scaffold. It is a working React o
 - Markdown-heavy release notes are parsed and grouped on the server.
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
+- The README now includes captured screenshots and a rerunnable local benchmark script.
 
 ## What The Demo Already Proves Well
 
@@ -25,14 +26,14 @@ As of April 15, 2026, this repo is no longer a scaffold. It is a working React o
 
 - No public hosted deployment is configured yet.
 - No production-environment benchmark has been captured yet.
-- No screenshot set or recorded walkthrough has been added yet.
+- No recorded walkthrough or GIF set has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
 
 ## Good Next Steps
 
 1. Deploy a public preview so the repo has a live URL, not just local instructions.
 2. Capture a production-style benchmark with production assets and a stable external API scenario.
-3. Add a short screenshot or GIF set to the README for faster top-of-page comprehension.
+3. Add a short recorded walkthrough or GIF set for faster async sharing.
 4. Add one or two additional comparison examples that are intentionally markdown-heavy.
 
 ## Notable Caveat

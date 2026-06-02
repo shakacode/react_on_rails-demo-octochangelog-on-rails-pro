@@ -45,6 +45,13 @@ Show why React on Rails Pro is compelling for pages that have:
 - "OAuth, sessions, redirects, persistence, and routing are still just Rails."
 - "This is a better fit for server-heavy pages than pretending every surface needs to become a full SPA."
 
+## How To Position This Repo Alongside Other ShakaCode Demos
+
+- `gumroad-rsc` is the product-experiment story inside a larger existing app.
+- `react_on_rails-hacker-news-app` is the multi-route content-app story with feeds, comments, and caching.
+- `react_on_rails-demo-octochangelog-on-rails-pro` is the showcase-migration story for a clearly server-heavy page with a tiny client island.
+- Use this repo when the conversation is about page-shape fit and Rails ownership, not about reproducing a whole app framework.
+
 ## What Not To Overclaim
 
 - Do not pitch this as a reason to rewrite every Rails page in React.

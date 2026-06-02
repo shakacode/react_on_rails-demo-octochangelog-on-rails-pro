@@ -6,7 +6,7 @@ These notes are for demo positioning and local reproducibility. They are not a p
 
 ## Test Setup
 
-- Date: April 14, 2026
+- Date: April 15, 2026
 - Mode: local development
 - Rails server: `bundle exec rails s -p 3000`
 - Node renderer: `RENDERER_PORT=3800 node client/node-renderer.js`
@@ -17,12 +17,12 @@ These notes are for demo positioning and local reproducibility. They are not a p
 
 Warmed landing-page requests:
 
-- `/`: ~31-34 ms total
+- `/`: ~31-40 ms total on a representative local sample
 
 Representative compare requests:
 
-- first request after boot or cache miss: about `0.8 s` on a sample run
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~355-419 ms total
+- first request after boot or cache miss: about `0.75 s` on a sample run
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~356-431 ms total
 
 ## Asset Snapshot
 
@@ -55,25 +55,15 @@ stay on the server path rather than becoming mandatory browser payload.
 ```bash
 bundle exec rails s -p 3000
 RENDERER_PORT=3800 node client/node-renderer.js
+script/benchmark_demo.sh
 ```
 
-Then in another terminal:
+If you want to target another local host or compare URL:
 
 ```bash
-for i in 1 2 3 4 5; do
-  curl -s -o /dev/null -w "%{time_starttransfer} %{time_total}\n" http://127.0.0.1:3000/
-done
-
-for i in 1 2 3; do
-  curl -s -o /dev/null -w "%{time_starttransfer} %{time_total}\n" \
-    "http://127.0.0.1:3000/compare?repo=octokit/rest.js&from=22.0.0&to=latest"
-done
-
-wc -c \
-  public/packs/js/generated/CompareFiltersStandalone.js \
-  public/packs/js/client0.js \
-  public/packs/js/generated/OctochangelogCompareResultsPage.js \
-  public/packs/css/application.css
+BASE_URL=http://127.0.0.1:3000 \
+COMPARE_PATH='/compare?repo=TanStack/router&from=1.120.5&to=latest' \
+script/benchmark_demo.sh
 ```
 
 ## Next Performance Step

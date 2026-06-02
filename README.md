@@ -55,6 +55,12 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 - Public deployment: not configured yet
 - Local demo after boot: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
+## Screenshots
+
+| Home route | Compare route |
+| --- | --- |
+| ![Home route screenshot](docs/images/home-page.png) | ![Compare route screenshot](docs/images/compare-page.png) |
+
 ## Quick Start
 
 ### Prerequisites
@@ -102,6 +108,7 @@ Without them, the app still works against public GitHub data.
 bin/dev
 bin/shakapacker
 bin/rails react_on_rails:generate_packs
+script/benchmark_demo.sh
 bin/rubocop
 bin/brakeman --no-pager
 bin/bundler-audit
@@ -194,12 +201,12 @@ Concretely, it gives a credible answer for surfaces like:
 
 ## Performance Snapshot
 
-These numbers are local development measurements from April 14, 2026 in unauthenticated GitHub mode.
+These numbers are local development measurements from April 15, 2026 in unauthenticated GitHub mode.
 They are useful as a demo baseline, not as a universal production claim.
 
-- warmed `/`: ~31-34 ms total
-- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~355-419 ms total
-- first compare request after boot or cache miss: ~0.8 s on a representative sample run
+- warmed `/`: ~31-40 ms total on a representative local sample
+- warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~356-431 ms total
+- first compare request after boot or cache miss: ~0.75 s on a representative sample run
 - `public/packs/js/generated/CompareFiltersStandalone.js`: 1,918 bytes
 - `public/packs/js/client0.js`: 22,012 bytes
 - `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes
@@ -212,7 +219,7 @@ Interpretation:
 - the interactive island stays small
 - the heavy release-note processing remains on the server instead of inflating browser JavaScript
 
-See [Performance Notes](docs/performance-notes.md) for methodology and rerun commands.
+See [Performance Notes](docs/performance-notes.md) for methodology and rerun commands via `script/benchmark_demo.sh`.
 
 ## Comparison with the Original Octochangelog Shape
 
@@ -228,10 +235,17 @@ See [Performance Notes](docs/performance-notes.md) for methodology and rerun com
 The important similarity is that both deliver a modern React UI.
 The important difference is ownership: Rails remains the request orchestrator and stateful shell.
 
+## How This Complements Other ShakaCode RSC Repos
+
+- [`shakacode/gumroad-rsc`](https://github.com/shakacode/gumroad-rsc) is a broader product-code experiment inside an existing application. This repo is the cleaner showcase-migration story: smaller setup, faster to explain, and easier to demo live.
+- [`shakacode/react_on_rails-hacker-news-app`](https://github.com/shakacode/react_on_rails-hacker-news-app) proves a multi-route content app with feeds, item pages, nested comments, and Rails-managed caching. This repo proves a different page shape: external API fetches, a very small client island, and heavy server-side rendering on one obviously RSC-friendly surface.
+- Together, the three repos cover distinct proof points: product experiment, content app, and focused showcase migration.
+
 ## Verification
 
 Verified locally:
 
+- `script/benchmark_demo.sh`
 - `bin/shakapacker`
 - `bin/rubocop`
 - `bin/brakeman --no-pager`
