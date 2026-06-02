@@ -1,0 +1,38 @@
+kind: gvc
+name: {{APP_NAME}}
+spec:
+  env:
+    - name: RAILS_ENV
+      value: production
+    - name: RAILS_LOG_LEVEL
+      value: info
+    - name: RAILS_SERVE_STATIC_FILES
+      value: "true"
+    - name: REACT_RENDERER_URL
+      value: http://renderer.{{APP_NAME}}.cpln.local:3800
+    - name: RENDERER_HOST
+      value: "0.0.0.0"
+    - name: RENDERER_PORT
+      value: "3800"
+    - name: RENDERER_WORKERS_COUNT
+      value: "1"
+    - name: RENDERER_SERVER_BUNDLE_CACHE_PATH
+      value: /rails/tmp/.node-renderer-bundles
+    - name: SOLID_QUEUE_IN_PUMA
+      value: "true"
+    # Review apps run pull request code. Values mounted through cpln://secret
+    # become readable by that code after the workload starts, so review-app
+    # secret references must use review/staging-specific values.
+    - name: RAILS_MASTER_KEY
+      value: cpln://secret/{{APP_SECRETS}}.RAILS_MASTER_KEY
+    - name: RENDERER_PASSWORD
+      value: cpln://secret/{{APP_SECRETS}}.RENDERER_PASSWORD
+    #
+    # Optional GitHub OAuth:
+    # - name: GITHUB_CLIENT_ID
+    #   value: cpln://secret/{{APP_SECRETS}}.GITHUB_CLIENT_ID
+    # - name: GITHUB_CLIENT_SECRET
+    #   value: cpln://secret/{{APP_SECRETS}}.GITHUB_CLIENT_SECRET
+  staticPlacement:
+    locationLinks:
+      - {{APP_LOCATION_LINK}}

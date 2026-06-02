@@ -14,6 +14,8 @@ As of April 15, 2026, this repo is no longer a scaffold. It is a working React o
 - The default README, positioning notes, demo notes, and performance notes are in place.
 - GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
 - The README now includes captured screenshots and a rerunnable local benchmark script.
+- Control Plane deployment scaffolding is now present for review apps, staging, and production promotion.
+- The Control Plane setup includes both the public Rails workload and the internal React on Rails Pro Node renderer workload.
 
 ## What The Demo Already Proves Well
 
@@ -24,17 +26,18 @@ As of April 15, 2026, this repo is no longer a scaffold. It is a working React o
 
 ## What Is Not Done Yet
 
-- No public hosted deployment is configured yet.
-- No production-environment benchmark has been captured yet.
+- No public hosted deployment URL is configured yet.
+- No hosted Control Plane benchmark has been captured yet.
 - No recorded walkthrough or GIF set has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
 
 ## Good Next Steps
 
-1. Deploy a public preview so the repo has a live URL, not just local instructions.
-2. Capture a production-style benchmark with production assets and a stable external API scenario.
-3. Add a short recorded walkthrough or GIF set for faster async sharing.
-4. Add one or two additional comparison examples that are intentionally markdown-heavy.
+1. Set the GitHub repository secrets and variables required by `.github/workflows/cpflow-*.yml`, including the optional renderer password if you do not want the default fallback.
+2. Provision the first staging app and confirm both the Rails workload and renderer workload boot on a pull request review app.
+3. Capture a hosted staging benchmark with production assets and a stable external API scenario.
+4. Add a short screenshot or GIF set to the README for faster top-of-page comprehension.
+5. Add one or two additional comparison examples that are intentionally markdown-heavy.
 
 ## Notable Caveat
 
