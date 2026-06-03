@@ -21,6 +21,8 @@ spec:
       maxScale: 1
     capacityAI: false
     timeoutSeconds: 60
+  securityOptions:
+    filesystemGroupId: 1000
   firewallConfig:
     external:
       inboundAllowCIDR:

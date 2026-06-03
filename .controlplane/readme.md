@@ -17,6 +17,7 @@ The Control Plane setup mirrors that:
 - `.controlplane/controlplane.yml` points `dockerfile: ../Dockerfile`
 - `templates/storage.yml` creates a persistent volume for `/rails/storage`
 - `templates/rails.yml` runs the public `rails` workload on port `80`
+- `templates/rails.yml` sets `securityOptions.filesystemGroupId: 1000` so the non-root Rails user can write to the mounted SQLite volume
 - `templates/renderer.yml` runs the internal React on Rails Pro Node renderer on port `3800` with the `http2` protocol expected by the Pro renderer
 - `bin/docker-entrypoint` runs `bin/rails db:prepare` when the Rails server starts on the mounted `/rails/storage` volume
 
