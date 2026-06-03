@@ -29,9 +29,6 @@ aliases:
     # Use the repo's real production Dockerfile rather than a second copy in .controlplane/.
     dockerfile: ../Dockerfile
 
-    # The generated review/staging/production workflows will run this when present.
-    release_script: release_script.sh
-
     stale_app_image_deployed_days: 5
     image_retention_days: 7
 

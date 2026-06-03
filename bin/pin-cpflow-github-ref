@@ -1,0 +1,112 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+
+USAGE = <<~USAGE
+  Usage: bin/pin-cpflow-github-ref [--allow-moving-ref] [--checkout-ref <ref>] <control-plane-flow-ref>
+
+  Use a release tag for readable release pinning, e.g. v5.0.0.
+  Use a full 40-character commit SHA for immutable release or upstream testing.
+  This updates generated reusable-workflow `uses:` refs plus the production
+  workflow's pinned control-plane-flow checkout and setup validation ref.
+  Use --checkout-ref to keep reusable workflows on a release tag while pinning
+  the production local-actions checkout to that release's commit SHA.
+  Regenerate from the cpflow gem when templates changed.
+  Use --allow-moving-ref only for short-lived local branch/ref experiments.
+USAGE
+
+FULL_COMMIT_SHA = /\A[0-9a-f]{40}\z/i
+RELEASE_TAG = /\Av\d+\.\d+\.\d+(?:[-.][0-9A-Za-z][0-9A-Za-z.-]*)?\z/
+PRODUCTION_WORKFLOW_REF = "shakacode/control-plane-flow/.github/workflows/" \
+                          "cpflow-promote-staging-to-production.yml"
+CPFLOW_CHECKOUT_REF_PATTERN = %r{
+  (^\s*-\s+name:\s+Checkout\ control-plane-flow\ actions\s*\n
+    (?:(?!^\s*-\s+name:).)*?
+    ^\s+repository:\s+shakacode/control-plane-flow\s*\n
+    (?:(?!^\s*-\s+name:).)*?
+    ^\s+ref:\s+)
+  [^\s]+
+}mx
+
+allow_moving_ref = false
+checkout_ref = nil
+positional = []
+
+args = ARGV.dup
+until args.empty?
+  arg = args.shift
+
+  case arg
+  when "--allow-moving-ref"
+    allow_moving_ref = true
+  when "--checkout-ref"
+    checkout_ref = args.shift
+    if checkout_ref.to_s.empty?
+      warn "--checkout-ref requires a ref value"
+      warn USAGE
+      exit 1
+    end
+  else
+    if arg.start_with?("--")
+      warn "Unknown option: #{arg}"
+      warn USAGE
+      exit 1
+    end
+
+    positional << arg
+  end
+end
+
+unless positional.length == 1
+  warn USAGE
+  exit 1
+end
+
+ref = positional.first
+checkout_ref ||= ref
+
+{ "Ref" => ref, "Checkout ref" => checkout_ref }.each do |label, candidate|
+  unless candidate.match?(%r{\A[0-9A-Za-z._/-]+\z})
+    warn "#{label} contains unsupported characters: #{candidate.inspect}"
+    exit 1
+  end
+
+  next if candidate.match?(FULL_COMMIT_SHA) || candidate.match?(RELEASE_TAG) || allow_moving_ref
+
+  warn "#{label} must be a full 40-character commit SHA or a v-prefixed release tag: #{candidate.inspect}"
+  warn "Use --allow-moving-ref only for a short-lived branch/ref experiment."
+  exit 1
+end
+
+root = Pathname.new(__dir__).join("..").expand_path
+workflow_paths = Dir[root.join(".github/workflows/cpflow-*.yml")]
+
+if workflow_paths.empty?
+  warn "No cpflow workflow wrappers found."
+  exit 1
+end
+
+changed = []
+workflow_paths.each do |path|
+  text = File.read(path)
+  production_setup_ref_pattern =
+    /(control_plane_flow_ref:\s+#{Regexp.escape(PRODUCTION_WORKFLOW_REF)}@)[^\s]+/
+  updated = text
+            .gsub(%r{(uses:\s+shakacode/control-plane-flow/\.github/workflows/[^@\s]+@)[^\s]+}, "\\1#{ref}")
+            .gsub(production_setup_ref_pattern, "\\1#{ref}")
+            .gsub(CPFLOW_CHECKOUT_REF_PATTERN, "\\1#{checkout_ref}")
+
+  next if updated == text
+
+  File.write(path, updated)
+  changed << Pathname.new(path).relative_path_from(root).to_s
+end
+
+puts "Pinned cpflow GitHub ref to #{ref}"
+puts "Pinned production checkout ref to #{checkout_ref}"
+if changed.empty?
+  puts "No files changed."
+else
+  changed.each { |path| puts "updated #{path}" }
+end

@@ -273,7 +273,7 @@ This repo now includes Control Plane deployment scaffolding:
 
 - `.controlplane/` contains the app, volume, and workload templates
 - `.controlplane/templates/renderer.yml` runs the internal React on Rails Pro Node renderer workload
-- `release_script.sh` prepares the SQLite-backed production databases before image cutover
+- `bin/docker-entrypoint` prepares the SQLite-backed production databases when the Rails server starts
 - `.github/workflows/cpflow-*.yml` adds review apps, staging deploys, production promotion, and stale-review-app cleanup
 
 See [Control Plane Deployment](.controlplane/readme.md) for required GitHub secrets and variables plus the expected app names.

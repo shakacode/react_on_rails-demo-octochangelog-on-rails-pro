@@ -1,7 +1,7 @@
 kind: workload
 name: rails
 spec:
-  type: standard
+  type: stateful
   containers:
     - name: rails
       cpu: 500m
@@ -21,6 +21,8 @@ spec:
       maxScale: 1
     capacityAI: false
     timeoutSeconds: 60
+  securityOptions:
+    filesystemGroupId: 1000
   firewallConfig:
     external:
       inboundAllowCIDR:

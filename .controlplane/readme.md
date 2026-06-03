@@ -1,6 +1,6 @@
 # Control Plane Deployment Notes
 
-This repo now includes `cpflow` scaffolding for:
+This repo includes `cpflow` 5.1.0 scaffolding for:
 
 - opt-in PR review apps
 - automatic staging deploys
@@ -17,8 +17,9 @@ The Control Plane setup mirrors that:
 - `.controlplane/controlplane.yml` points `dockerfile: ../Dockerfile`
 - `templates/storage.yml` creates a persistent volume for `/rails/storage`
 - `templates/rails.yml` runs the public `rails` workload on port `80`
-- `templates/renderer.yml` runs the internal React on Rails Pro Node renderer on port `3800`
-- `release_script.sh` runs `bin/rails db:prepare` before deploys switch images
+- `templates/rails.yml` sets `securityOptions.filesystemGroupId: 1000` so the non-root Rails user can write to the mounted SQLite volume
+- `templates/renderer.yml` runs the internal React on Rails Pro Node renderer on port `3800` with the `http2` protocol expected by the Pro renderer
+- `bin/docker-entrypoint` runs `bin/rails db:prepare` when the Rails server starts on the mounted `/rails/storage` volume
 
 Because this demo uses Shakapacker plus the React on Rails Pro Node renderer, the root `Dockerfile` now installs Node.js and runs `npm ci` so the same image can both precompile assets and serve renderer requests in Control Plane.
 The renderer is also configured to bind `0.0.0.0` in production so the separate `rails` workload can reach it over the shared Control Plane network.
@@ -33,20 +34,22 @@ Before the app will boot on Control Plane, configure the shared app secret store
 
 Each store must include at least:
 
-- `RAILS_MASTER_KEY`
+- `SECRET_KEY_BASE`
 - `RENDERER_PASSWORD`
+- `REACT_ON_RAILS_PRO_LICENSE`
 
 Optional:
 
+- `RAILS_MASTER_KEY`, only when production encrypted credentials are required
 - `GITHUB_CLIENT_ID`
 - `GITHUB_CLIENT_SECRET`
 
 These are referenced from `templates/app.yml` through `cpln://secret/{{APP_SECRETS}}`.
 
-Review apps run pull request code. Do not mount a production `RAILS_MASTER_KEY`
-or production OAuth credentials into review apps. Use review/staging-specific
-credentials because values mounted through `cpln://secret/...` can be read by app
-code after the workload starts.
+Review apps run pull request code. Do not mount a production `SECRET_KEY_BASE`,
+`RAILS_MASTER_KEY`, React on Rails Pro license, or production OAuth credentials
+into review apps. Use review/staging-specific values because values mounted
+through `cpln://secret/...` can be read by app code after the workload starts.
 
 ## Local cpflow Flow
 
@@ -57,7 +60,7 @@ export APP_NAME=octochangelog-on-rails-pro-staging
 
 cpflow setup-app -a "$APP_NAME"
 cpflow build-image -a "$APP_NAME"
-cpflow deploy-image -a "$APP_NAME" --run-release-phase
+cpflow deploy-image -a "$APP_NAME"
 cpflow open -a "$APP_NAME"
 ```
 
@@ -65,26 +68,38 @@ cpflow open -a "$APP_NAME"
 
 The production promotion workflow captures the current workload images before
 deploying and restores those images if the post-deploy health check fails. That
-rollback does not reverse database migrations already run by the release phase.
-Keep production migrations backward-compatible, using an expand/contract style
-for destructive schema changes.
+rollback does not reverse database changes prepared during the replacement
+Rails workload boot. Keep production migrations backward-compatible, using an
+expand/contract style for destructive schema changes.
 
 ## GitHub Actions Variables and Secrets
 
-Set these in GitHub before enabling the generated `cpflow-*` workflows:
+The generated `cpflow-*` workflows are thin wrappers pinned to
+`shakacode/control-plane-flow@v5.1.0`; production promotion also pins the local
+`.cpflow` checkout to that release's immutable commit. See
+`.github/cpflow-help.md` for the full generated command reference and
+version-pinning notes.
+
+Repository secrets:
 
 - `CPLN_TOKEN_STAGING`
-- `CPLN_TOKEN_PRODUCTION`
+
+Repository variables:
+
 - `CPLN_ORG_STAGING=shakacode-open-source-examples-staging`
-- `CPLN_ORG_PRODUCTION=shakacode-open-source-examples-production`
 - `STAGING_APP_NAME=octochangelog-on-rails-pro-staging`
-- `PRODUCTION_APP_NAME=octochangelog-on-rails-pro-production`
 - `REVIEW_APP_PREFIX=octochangelog-on-rails-pro-review-pr`
 
 Optional:
 
 - `STAGING_APP_BRANCH=main`
 - `PRIMARY_WORKLOAD=rails`
+
+Production GitHub Environment secrets and variables:
+
+- `CPLN_TOKEN_PRODUCTION`, as a secret on the protected `production` environment
+- `CPLN_ORG_PRODUCTION=shakacode-open-source-examples-production`
+- `PRODUCTION_APP_NAME=octochangelog-on-rails-pro-production`
 
 Use a staging/review `CPLN_TOKEN_STAGING` that cannot access production Control
 Plane resources. In public repositories, review-app deploys skip fork PR heads
