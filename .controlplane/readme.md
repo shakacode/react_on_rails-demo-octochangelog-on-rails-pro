@@ -75,8 +75,10 @@ expand/contract style for destructive schema changes.
 ## GitHub Actions Variables and Secrets
 
 The generated `cpflow-*` workflows are thin wrappers pinned to
-`shakacode/control-plane-flow@v5.1.0`. See `.github/cpflow-help.md` for the
-full generated command reference and version-pinning notes.
+`shakacode/control-plane-flow@v5.1.0`; production promotion also pins the local
+`.cpflow` checkout to that release's immutable commit. See
+`.github/cpflow-help.md` for the full generated command reference and
+version-pinning notes.
 
 Repository secrets:
 

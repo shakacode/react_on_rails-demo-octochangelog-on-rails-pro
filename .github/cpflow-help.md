@@ -98,24 +98,25 @@ production org, using production-only secrets and values.
 
 ## Version Locking
 
-Generated wrappers pin Control Plane Flow with a release tag, for example
-`v5.1.0`. Reusable review-app, staging, cleanup, and
-helper workflows pin the tag in their `uses:` ref. Production promotion pins
-the same tag in the `Checkout control-plane-flow actions` step so the
-caller-owned job can keep `environment: production` and receive production
-environment secrets directly.
+Generated reusable wrappers pin Control Plane Flow with a release tag, for
+example `v5.1.0`, so `CPFLOW_VERSION` can validate against a semantic release.
+Production promotion also checks out `shakacode/control-plane-flow` for local
+`.cpflow` composite actions; pin that checkout to the release tag's immutable
+commit SHA so the caller-owned job can keep `environment: production` and
+receive production environment secrets directly.
 
 Leave `CPFLOW_VERSION` unset so the workflow builds cpflow from the same
 checked-out upstream source. If you set `CPFLOW_VERSION`, it must match the
-release tag your wrappers are pinned to: a `CPFLOW_VERSION=5.1.x` runtime
-override goes with a wrapper pinned to `uses: ...@v5.1.x` (substitute the
-release you pinned above).
+upstream release your wrappers are pinned to: a `CPFLOW_VERSION=5.1.x` runtime
+override goes with wrappers pinned to the `v5.1.x` tag.
 
 After updating the `cpflow` gem in this repo, update the generated wrappers in
 the same PR:
 
 ```sh
 cpflow update-github-actions
+git ls-remote https://github.com/shakacode/control-plane-flow.git refs/tags/v5.1.0
+bin/pin-cpflow-github-ref --checkout-ref <40-character-control-plane-flow-commit-sha> v5.1.0
 bin/test-cpflow-github-flow
 ```
 
@@ -123,6 +124,8 @@ If `cpflow` is bundled by the app, use:
 
 ```sh
 bundle exec cpflow update-github-actions
+git ls-remote https://github.com/shakacode/control-plane-flow.git refs/tags/v5.1.0
+bin/pin-cpflow-github-ref --checkout-ref <40-character-control-plane-flow-commit-sha> v5.1.0
 bin/test-cpflow-github-flow bundle exec cpflow
 ```
 

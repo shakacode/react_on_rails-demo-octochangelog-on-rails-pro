@@ -58,6 +58,7 @@ jobs:
     outputs:
       staging_app_name: ${{ steps.release-context.outputs.staging_app_name }}
       production_app_name: ${{ steps.release-context.outputs.production_app_name }}
+      promoted_git_sha: ${{ steps.staging-image.outputs.promoted_git_sha }}
 
     steps:
       - name: Checkout repository
@@ -69,7 +70,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           repository: shakacode/control-plane-flow
-          ref: v5.1.0
+          ref: e46f5dc03f6ef4b03de2438d14bc0349c220d2c7
           path: .cpflow
           persist-credentials: false
 
@@ -246,6 +247,16 @@ jobs:
           selected_image=""
           selected_version=""
           rollback_state='{}'
+          rollback_available=true
+
+          invalid_image_ref() {
+            [[ -z "$1" || "$1" == "NO_IMAGE_AVAILABLE" || "$1" == "{{APP_IMAGE_LINK}}" ]]
+          }
+
+          mark_rollback_unavailable() {
+            rollback_available=false
+            echo "::warning::$*" >&2
+          }
 
           # Validate all workloads have images, then promote the primary workload's
           # image as the canonical image for this GVC.
@@ -256,6 +267,23 @@ jobs:
             workload_image="$(echo "${workload_json}" | jq -r '.spec.containers[0].image // empty')"
             workload_containers="$(echo "${workload_json}" | jq -c '.spec.containers | map({name, image})')"
             workload_version="$(echo "${workload_json}" | jq -r '.version')"
+            container_images="$(echo "${workload_json}" | jq -r '.spec.containers[] | [.name, (.image // "")] | @tsv')"
+
+            if [[ -z "${workload_version}" ]]; then
+              mark_rollback_unavailable "Could not capture current version for workload '${workload_name}'; promotion will continue without automatic rollback."
+            fi
+
+            if [[ -z "${container_images}" ]]; then
+              mark_rollback_unavailable "Workload '${workload_name}' has no containers to capture for rollback; promotion will continue without automatic rollback."
+            fi
+
+            while IFS=$'\t' read -r container_name container_image; do
+              [[ -n "${container_name}" ]] || continue
+
+              if invalid_image_ref "${container_image}"; then
+                mark_rollback_unavailable "Workload '${workload_name}' container '${container_name}' has no rollback-safe image (${container_image:-empty}); promotion will continue without automatic rollback."
+              fi
+            done <<< "${container_images}"
 
             if [[ "${workload_name}" == "${selected_workload}" ]]; then
               selected_image="${workload_image}"
@@ -274,12 +302,18 @@ jobs:
           done < <(tr ',' '\n' <<< "${WORKLOAD_NAMES}")
 
           if [[ -z "${selected_image}" || -z "${selected_version}" ]]; then
-            echo "::error::Could not capture current image/version for primary workload '${selected_workload}'." >&2
-            exit 1
+            mark_rollback_unavailable "Could not capture current image/version for primary workload '${selected_workload}'; promotion will continue without automatic rollback."
+            selected_image="${selected_image:-unavailable}"
+            selected_version="${selected_version:-unavailable}"
+          fi
+
+          if [[ "${rollback_available}" != "true" ]]; then
+            rollback_state='{}'
           fi
 
           echo "current_image=${selected_image}" >> "$GITHUB_OUTPUT"
           echo "current_version=${selected_version}" >> "$GITHUB_OUTPUT"
+          echo "rollback_available=${rollback_available}" >> "$GITHUB_OUTPUT"
           # Randomize the heredoc delimiter so a stray "EOF" line inside rollback_state can't terminate it early.
           delim="EOF_$(openssl rand -hex 8)"
           {
@@ -309,8 +343,8 @@ jobs:
             workload_json="$(CPLN_TOKEN="${CPLN_TOKEN_STAGING}" cpln workload get "${workload_name}" --gvc "${STAGING_APP_NAME}" --org "${CPLN_ORG_STAGING}" -o json)"
             workload_image="$(echo "${workload_json}" | jq -r '.spec.containers[0].image // empty')"
 
-            if [[ -z "${workload_image}" ]]; then
-              echo "::error::Could not find an image on staging workload '${workload_name}'." >&2
+            if [[ -z "${workload_image}" || "${workload_image}" == "NO_IMAGE_AVAILABLE" || "${workload_image}" == "{{APP_IMAGE_LINK}}" ]]; then
+              echo "::error::Could not find a deployable image on staging workload '${workload_name}' (${workload_image:-empty})." >&2
               exit 1
             fi
 
@@ -333,7 +367,16 @@ jobs:
             staging_image="${staging_image_ref}"
           fi
 
+          promoted_git_sha=""
+          promoted_git_sha_candidate="$(sed -E 's/^.*:([0-9]+_)?([0-9a-f]{40})(@sha256:[0-9a-f]{64})?$/\2/' <<< "${staging_image_ref}")"
+          if [[ "${promoted_git_sha_candidate}" =~ ^[0-9a-f]{40}$ ]]; then
+            promoted_git_sha="${promoted_git_sha_candidate}"
+          else
+            echo "::warning::Could not derive the promoted git SHA from staging image '${staging_image_ref}'; the GitHub release will not be target-pinned."
+          fi
+
           echo "image=${staging_image}" >> "$GITHUB_OUTPUT"
+          echo "promoted_git_sha=${promoted_git_sha}" >> "$GITHUB_OUTPUT"
 
       - name: Copy image from staging
         env:
@@ -418,7 +461,7 @@ jobs:
           accepted_statuses: ${{ env.HEALTH_CHECK_ACCEPTED_STATUSES }}
 
       - name: Roll back on failure
-        if: failure() && steps.capture-current.outcome == 'success'
+        if: failure() && steps.capture-current.outputs.rollback_available == 'true'
         env:
           ROLLBACK_STATE: ${{ steps.capture-current.outputs.rollback_state }}
           PRODUCTION_APP_NAME: ${{ vars.PRODUCTION_APP_NAME }}
@@ -480,7 +523,7 @@ jobs:
           fi
 
       - name: Wait for rollback readiness
-        if: failure() && steps.capture-current.outcome == 'success'
+        if: failure() && steps.capture-current.outputs.rollback_available == 'true'
         env:
           ROLLBACK_STATE: ${{ steps.capture-current.outputs.rollback_state }}
           PRODUCTION_APP_NAME: ${{ vars.PRODUCTION_APP_NAME }}
@@ -553,7 +596,9 @@ jobs:
           HEALTHY: ${{ steps.health-check.outputs.healthy }}
           PREVIOUS_IMAGE: ${{ steps.capture-current.outputs.current_image }}
           PREVIOUS_VERSION: ${{ steps.capture-current.outputs.current_version }}
+          ROLLBACK_AVAILABLE: ${{ steps.capture-current.outputs.rollback_available }}
           DEPLOYED_IMAGE: ${{ steps.staging-image.outputs.image }}
+          PROMOTED_GIT_SHA: ${{ steps.staging-image.outputs.promoted_git_sha }}
         shell: bash
         run: |
           {
@@ -567,7 +612,9 @@ jobs:
             echo
             echo "Previous image: \`${PREVIOUS_IMAGE}\`"
             echo "Previous version: ${PREVIOUS_VERSION}"
+            echo "Automatic rollback available: ${ROLLBACK_AVAILABLE}"
             echo "Deployed image: \`${DEPLOYED_IMAGE}\`"
+            echo "Promoted git SHA: ${PROMOTED_GIT_SHA}"
           } >> "$GITHUB_STEP_SUMMARY"
 
   create-github-release:
@@ -585,6 +632,7 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
           STAGING_APP_NAME: ${{ needs.promote-to-production.outputs.staging_app_name }}
           PRODUCTION_APP_NAME: ${{ needs.promote-to-production.outputs.production_app_name }}
+          PROMOTED_GIT_SHA: ${{ needs.promote-to-production.outputs.promoted_git_sha }}
         shell: bash
         run: |
           set -euo pipefail
@@ -593,6 +641,17 @@ jobs:
           timestamp="$(date '+%H%M%S')"
           release_tag="production-${release_date}-${timestamp}-${GITHUB_RUN_ID}"
 
-          gh release create "${release_tag}" \
-            --title "Production Release ${release_date} ${timestamp}" \
-            --notes "Promoted ${STAGING_APP_NAME} to ${PRODUCTION_APP_NAME} on ${release_date} at ${timestamp}."
+          release_notes="Promoted ${STAGING_APP_NAME} to ${PRODUCTION_APP_NAME} on ${release_date} at ${timestamp}."
+          release_args=(
+            "${release_tag}"
+            --title "Production Release ${release_date} ${timestamp}"
+            --notes "${release_notes}"
+          )
+
+          if [[ -n "${PROMOTED_GIT_SHA}" ]]; then
+            release_args+=(--target "${PROMOTED_GIT_SHA}")
+          else
+            echo "::warning::Promoted git SHA was not available; creating release against GitHub's default target."
+          fi
+
+          gh release create "${release_args[@]}"

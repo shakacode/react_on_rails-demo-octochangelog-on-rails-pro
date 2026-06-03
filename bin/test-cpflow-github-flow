@@ -47,6 +47,7 @@ PROMOTE_WORKFLOW = %r{\Ashakacode/control-plane-flow/\.github/workflows/cpflow-p
 EXPECTED_PROMOTE_WORKFLOW_REF_FORMAT = "shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@vX.Y.Z"
 EXPECTED_CPFLOW_CHECKOUT_ACTION = "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
 EXPECTED_CPFLOW_CHECKOUT_REPOSITORY = "shakacode/control-plane-flow"
+FULL_COMMIT_SHA = /\A[0-9a-f]{40}\z/i
 
 refs = Hash.new { |hash, key| hash[key] = [] }
 
@@ -119,7 +120,9 @@ if checkout_ref.to_s.strip.empty?
   abort "#{promote_path}:promote-to-production must pin the Checkout control-plane-flow actions step"
 end
 
-refs[checkout_ref] << "#{promote_path}:promote-to-production"
+unless checkout_ref.match?(FULL_COMMIT_SHA)
+  abort "#{promote_path}:promote-to-production must pin the Checkout control-plane-flow actions step to a full commit SHA"
+end
 
 setup_step = Array(promote_job["steps"]).find { |step| step["name"] == "Setup production environment" }
 
@@ -147,6 +150,8 @@ elsif refs.length > 1
 else
   puts "cpflow refs: #{refs.keys.sort.join(', ')}"
 end
+
+puts "cpflow checkout ref: #{checkout_ref}"
 RUBY
 
 echo "==> actionlint"
