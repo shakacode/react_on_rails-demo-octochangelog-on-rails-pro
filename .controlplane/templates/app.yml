@@ -23,10 +23,16 @@ spec:
     # Review apps run pull request code. Values mounted through cpln://secret
     # become readable by that code after the workload starts, so review-app
     # secret references must use review/staging-specific values.
-    - name: RAILS_MASTER_KEY
-      value: cpln://secret/{{APP_SECRETS}}.RAILS_MASTER_KEY
+    - name: SECRET_KEY_BASE
+      value: cpln://secret/{{APP_SECRETS}}.SECRET_KEY_BASE
     - name: RENDERER_PASSWORD
       value: cpln://secret/{{APP_SECRETS}}.RENDERER_PASSWORD
+    - name: REACT_ON_RAILS_PRO_LICENSE
+      value: cpln://secret/{{APP_SECRETS}}.REACT_ON_RAILS_PRO_LICENSE
+    #
+    # Optional encrypted credentials:
+    # - name: RAILS_MASTER_KEY
+    #   value: cpln://secret/{{APP_SECRETS}}.RAILS_MASTER_KEY
     #
     # Optional GitHub OAuth:
     # - name: GITHUB_CLIENT_ID
