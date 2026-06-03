@@ -18,7 +18,7 @@ The Control Plane setup mirrors that:
 - `templates/storage.yml` creates a persistent volume for `/rails/storage`
 - `templates/rails.yml` runs the public `rails` workload on port `80`
 - `templates/renderer.yml` runs the internal React on Rails Pro Node renderer on port `3800` with the `http2` protocol expected by the Pro renderer
-- `release_script.sh` runs `bin/rails db:prepare` before deploys switch images
+- `bin/docker-entrypoint` runs `bin/rails db:prepare` when the Rails server starts on the mounted `/rails/storage` volume
 
 Because this demo uses Shakapacker plus the React on Rails Pro Node renderer, the root `Dockerfile` now installs Node.js and runs `npm ci` so the same image can both precompile assets and serve renderer requests in Control Plane.
 The renderer is also configured to bind `0.0.0.0` in production so the separate `rails` workload can reach it over the shared Control Plane network.
@@ -59,7 +59,7 @@ export APP_NAME=octochangelog-on-rails-pro-staging
 
 cpflow setup-app -a "$APP_NAME"
 cpflow build-image -a "$APP_NAME"
-cpflow deploy-image -a "$APP_NAME" --run-release-phase
+cpflow deploy-image -a "$APP_NAME"
 cpflow open -a "$APP_NAME"
 ```
 
@@ -67,9 +67,9 @@ cpflow open -a "$APP_NAME"
 
 The production promotion workflow captures the current workload images before
 deploying and restores those images if the post-deploy health check fails. That
-rollback does not reverse database migrations already run by the release phase.
-Keep production migrations backward-compatible, using an expand/contract style
-for destructive schema changes.
+rollback does not reverse database changes prepared during the replacement
+Rails workload boot. Keep production migrations backward-compatible, using an
+expand/contract style for destructive schema changes.
 
 ## GitHub Actions Variables and Secrets
 
