@@ -13,7 +13,7 @@ spec:
       memory: 512Mi
       ports:
         - number: 3800
-          protocol: http
+          protocol: http2
   defaultOptions:
     autoscaling:
       minScale: 1
@@ -21,6 +21,9 @@ spec:
     capacityAI: false
     timeoutSeconds: 60
   firewallConfig:
+    external:
+      outboundAllowCIDR:
+        - 0.0.0.0/0
     internal:
       inboundAllowType: same-gvc
   identityLink: "{{APP_IDENTITY_LINK}}"

@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t ror_tanstack .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name ror_tanstack ror_tanstack
+# docker build -t octochangelog-on-rails-pro .
+# docker run -d -p 80:80 -e SECRET_KEY_BASE=<generated secret> -e RENDERER_PASSWORD=<secret> --name octochangelog-on-rails-pro octochangelog-on-rails-pro
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -44,7 +44,7 @@ RUN apt-get update -qq && \
 # Install application gems
 COPY vendor/* ./vendor/
 COPY Gemfile Gemfile.lock ./
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
