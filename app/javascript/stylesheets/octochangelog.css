@@ -609,6 +609,7 @@ pre {
 .octo-suggestion-grid {
   display: grid;
   gap: 10px;
+  min-width: 0;
   margin-top: 16px;
 }
 
@@ -616,11 +617,13 @@ pre {
   display: grid;
   gap: 4px;
   width: 100%;
+  min-width: 0;
   padding: 13px;
   border: 1px solid var(--octo-line);
   border-radius: var(--octo-radius);
   background: #ffffff;
   color: var(--octo-ink);
+  overflow: hidden;
   text-align: left;
   cursor: pointer;
 }
@@ -631,6 +634,13 @@ pre {
 
 .octo-suggestion strong {
   font-size: 0.96rem;
+}
+
+.octo-suggestion strong,
+.octo-suggestion span,
+.octo-suggestion small {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .octo-suggestion span,
