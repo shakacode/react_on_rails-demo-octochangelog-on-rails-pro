@@ -1,6 +1,6 @@
 # Control Plane Deployment Notes
 
-This repo includes `cpflow` 5.1.0 scaffolding for:
+This repo includes `cpflow` 5.1.1 scaffolding for:
 
 - opt-in PR review apps
 - automatic staging deploys
@@ -75,7 +75,7 @@ expand/contract style for destructive schema changes.
 ## GitHub Actions Variables and Secrets
 
 The generated `cpflow-*` workflows are thin wrappers pinned to
-`shakacode/control-plane-flow@v5.1.0`; production promotion also pins the local
+`shakacode/control-plane-flow@v5.1.1`; production promotion also pins the local
 `.cpflow` checkout to that release's immutable commit. See
 `.github/cpflow-help.md` for the full generated command reference and
 version-pinning notes.
