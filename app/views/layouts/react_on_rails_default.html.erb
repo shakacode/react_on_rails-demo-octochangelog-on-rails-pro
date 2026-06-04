@@ -3,6 +3,11 @@
   <head>
     <title>Octochangelog on Rails Pro</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="application-name" content="Octochangelog on Rails Pro">
+    <meta
+      name="description"
+      content="Compare GitHub changelogs in a single view, powered by React on Rails Pro and Control Plane."
+    >
     <%= csrf_meta_tags %>
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -14,6 +19,29 @@
   </head>
 
   <body>
+    <header class="octo-app-header">
+      <a class="octo-brand" href="<%= root_path %>">
+        <img src="/mascot-logo.png" alt="Octochangelog mascot" width="48" height="48">
+        <span>Octochangelog</span>
+      </a>
+
+      <nav class="octo-nav" aria-label="Primary navigation">
+        <a href="<%= compare_path %>">Compare</a>
+        <a href="https://github.com/Belco90/octochangelog" rel="noreferrer" target="_blank">Original</a>
+        <a href="https://github.com/shakacode/react_on_rails-demo-octochangelog-on-rails-pro" rel="noreferrer" target="_blank">Rails port</a>
+      </nav>
+    </header>
+
     <%= yield %>
+
+    <footer class="octo-app-footer">
+      <p>
+        Created with love by
+        <a href="https://belco.dev/" rel="noreferrer" target="_blank">Belco</a>
+        &amp;
+        <a href="https://github.com/HonkingGoose" rel="noreferrer" target="_blank">HonkingGoose</a>.
+      </p>
+      <p>Powered by React on Rails Pro, React Server Components, and Control Plane.</p>
+    </footer>
   </body>
 </html>

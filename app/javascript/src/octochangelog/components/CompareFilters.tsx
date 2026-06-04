@@ -47,6 +47,19 @@ async function readJson<T>(url: string, signal: AbortSignal): Promise<T> {
   return payload as T;
 }
 
+function normalizeInitialVersion(version?: string | null): string {
+  if (!version) {
+    return "";
+  }
+
+  if (version.toLowerCase() === "latest") {
+    return "latest";
+  }
+
+  const tagParts = version.split("/");
+  return (tagParts[tagParts.length - 1] ?? version).replace(/^v/, "");
+}
+
 export default function CompareFilters({
   authEnabled,
   authenticated,
@@ -61,8 +74,8 @@ export default function CompareFilters({
   repositoriesEndpoint,
 }: CompareFiltersProps) {
   const [repositoryQuery, setRepositoryQuery] = useState(initialRepo ?? "");
-  const [fromVersion, setFromVersion] = useState(initialFrom ?? "");
-  const [toVersion, setToVersion] = useState(initialTo ?? "");
+  const [fromVersion, setFromVersion] = useState(normalizeInitialVersion(initialFrom));
+  const [toVersion, setToVersion] = useState(normalizeInitialVersion(initialTo));
   const [repositorySuggestions, setRepositorySuggestions] = useState<RepositorySearchResult[]>([]);
   const [repositoryState, setRepositoryState] = useState<LoadState>("idle");
   const [repositoryError, setRepositoryError] = useState("");
@@ -80,13 +93,14 @@ export default function CompareFilters({
   });
 
   const fromOptions = releaseOptions.length > 1 ? releaseOptions.slice(1) : [];
-  const toOptions = releaseOptions.length
+  const latestRelease = releaseOptions[0];
+  const toOptions = latestRelease
     ? [
         {
           id: -1,
-          name: `Latest (${releaseOptions[0].version})`,
+          name: `Latest (${latestRelease.version})`,
           tagName: "latest",
-          url: releaseOptions[0].url,
+          url: latestRelease.url,
           version: "latest",
         },
         ...releaseOptions,
@@ -223,18 +237,25 @@ export default function CompareFilters({
     return `${releaseOptions.length} stable releases are available for this repository.`;
   })();
 
+  const releaseOptionsMatchRepository =
+    !normalizedRepositoryQuery || lastResolvedRepository.current === normalizedRepositoryQuery;
   const submitDisabled =
     !isRepositorySlug(normalizedRepositoryQuery) ||
     !fromVersion ||
     !toVersion ||
-    releaseState === "loading";
+    releaseState === "loading" ||
+    !releaseOptionsMatchRepository;
+  const versionSelectsDisabled =
+    !releaseOptionsMatchRepository || releaseOptions.length === 0 || releaseState === "loading";
+  const includeHiddenVersionParams =
+    versionSelectsDisabled && releaseOptionsMatchRepository && Boolean(fromVersion && toVersion);
 
   return (
     <section className="octo-filter-card">
       <div className="octo-filter-header">
         <div>
-          <p className="octo-eyebrow">Client-side island</p>
-          <h2>Drive the comparison from the browser without hydrating the results zone.</h2>
+          <p className="octo-eyebrow">Filters</p>
+          <h2>Pick a repo and release window.</h2>
         </div>
         <span
           className={clsx("octo-pill", authenticated ? "octo-pill--success" : "octo-pill--soft")}
@@ -244,6 +265,13 @@ export default function CompareFilters({
       </div>
 
       <form action={comparePath} className="octo-form-grid" method="get">
+        {includeHiddenVersionParams ? (
+          <>
+            <input name="from" type="hidden" value={fromVersion} />
+            <input name="to" type="hidden" value={toVersion} />
+          </>
+        ) : null}
+
         <label className="octo-field">
           <span>Repository</span>
           <input
@@ -259,7 +287,7 @@ export default function CompareFilters({
         <label className="octo-field">
           <span>From version</span>
           <select
-            disabled={releaseOptions.length === 0 || releaseState === "loading"}
+            disabled={versionSelectsDisabled}
             name="from"
             onChange={(event) => setFromVersion(event.target.value)}
             value={fromVersion}
@@ -276,7 +304,7 @@ export default function CompareFilters({
         <label className="octo-field">
           <span>To version</span>
           <select
-            disabled={releaseOptions.length === 0 || releaseState === "loading"}
+            disabled={versionSelectsDisabled}
             name="to"
             onChange={(event) => setToVersion(event.target.value)}
             value={toVersion}
@@ -322,8 +350,8 @@ export default function CompareFilters({
         <div>
           <h3>GitHub authorization</h3>
           <p>
-            When OAuth is enabled, Rails keeps the token in the encrypted session and uses it for both
-            the version selector API and the server-side comparison fetch.
+            Rails keeps OAuth tokens in the encrypted session and uses them for the release selector
+            API and the server-rendered comparison.
           </p>
         </div>
 

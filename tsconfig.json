@@ -9,6 +9,7 @@
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "es2022", "es2020.intl"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

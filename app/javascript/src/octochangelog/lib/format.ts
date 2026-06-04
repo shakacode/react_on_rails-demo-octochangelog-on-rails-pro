@@ -32,7 +32,7 @@ export function compareGroupKeys(left: string, right: string): number {
     return left.localeCompare(right);
   }
 
-  const reference = leftPriority === -1 ? HIGH_PRIORITY_GROUPS : LOW_PRIORITY_GROUPS;
+  const reference: readonly string[] = leftPriority === -1 ? HIGH_PRIORITY_GROUPS : LOW_PRIORITY_GROUPS;
   return reference.indexOf(left as (typeof reference)[number]) - reference.indexOf(right as (typeof reference)[number]);
 }
 
@@ -64,7 +64,8 @@ export function displayGroupTitle(groupKey: string, originalTitle?: string): str
 }
 
 export function extractVersionFromTag(tagName: string): string {
-  const candidate = tagName.split("/").at(-1) ?? tagName;
+  const tagParts = tagName.split("/");
+  const candidate = tagParts[tagParts.length - 1] ?? tagName;
   return semver.coerce(candidate)?.version ?? candidate.replace(/^v/, "");
 }
 

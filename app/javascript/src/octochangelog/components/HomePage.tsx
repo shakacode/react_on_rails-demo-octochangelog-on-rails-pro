@@ -2,96 +2,103 @@ import React from "react";
 
 import type { HomePageProps } from "../lib/types";
 
+const FEATURES = [
+  {
+    icon: "swap",
+    title: "Compare releases easily",
+    description:
+      "Sifting through changelogs on GitHub taking too much time? Let Octochangelog put the list of changes in a single view!",
+  },
+  {
+    icon: "share",
+    title: "Share changelogs",
+    description: "Want to let your team review the changes in a dependency? Give them a link!",
+  },
+  {
+    icon: "fire",
+    title: "Don't miss breaking changes",
+    description:
+      "Octochangelog finds all breaking changes, and lists them at the top. You cannot miss those pesky gotchas now!",
+  },
+  {
+    icon: "sort",
+    title: "No manual sorting",
+    description:
+      "Want a list of major, minor and patch level changes? Octochangelog groups changes into categories for you!",
+  },
+  {
+    icon: "tag",
+    title: "Changes per version",
+    description: "Want to know which version introduced a certain change? Octochangelog labels each change with the version number.",
+  },
+];
+
 export default function HomePage({
   comparePath,
-  distinctRepositories,
   featuredComparisons,
   recentRuns,
   sourceName,
   sourceUrl,
-  totalComparisons,
 }: HomePageProps) {
-  const statFormatter = new Intl.NumberFormat("en-US");
+  const exampleComparison = featuredComparisons[0];
 
   return (
     <main className="octo-page">
       <section className="octo-hero">
+        <img className="octo-hero-mascot" src="/mascot-logo.png" alt="" width="600" height="600" />
         <div className="octo-hero-copy">
-          <p className="octo-eyebrow">React on Rails Pro showcase migration</p>
-          <h1>Octochangelog is the best TanStack showcase candidate for a Rails + RSC port.</h1>
+          <p className="octo-eyebrow">Rails + RSC edition</p>
+          <h1>Octochangelog</h1>
+          <h2>Compare GitHub changelogs in a single view</h2>
           <p className="octo-lead">
-            It is a real product, it is MIT-licensed, and its hot path is exactly what React Server
-            Components should absorb: server-side GitHub fetching, markdown normalization, release
-            grouping, and rich rendering with almost no client JavaScript.
+            Pick a repository and two versions. Octochangelog gathers the release notes, groups the
+            important sections, and gives your team a link they can review together.
           </p>
 
-          <div className="octo-hero-actions">
+          <div className="octo-action-row">
             <a className="octo-button octo-button--primary" href={comparePath}>
-              Open the comparison studio
+              Compare changelogs
             </a>
-            <a className="octo-button octo-button--ghost" href={sourceUrl} rel="noreferrer" target="_blank">
-              View the original {sourceName}
-            </a>
+            {exampleComparison ? (
+              <a className="octo-button octo-button--secondary" href={exampleComparison.href}>
+                See example
+              </a>
+            ) : null}
           </div>
         </div>
+      </section>
 
-        <div className="octo-hero-panel">
-          <div className="octo-stat-grid">
-            <article className="octo-stat-card">
-              <span>Comparisons logged</span>
-              <strong>{statFormatter.format(totalComparisons)}</strong>
+      <section className="octo-powered-strip" aria-label="Powered by">
+        <div>
+          <span>Powered by React on Rails Pro, React Server Components, and Control Plane</span>
+          <strong>Rails owns routing, OAuth, persistence, and deploys while RSC streams the heavy changelog rendering.</strong>
+        </div>
+        <a href={sourceUrl} rel="noreferrer" target="_blank">
+          View the original {sourceName}
+        </a>
+      </section>
+
+      <section className="octo-section">
+        <div className="octo-section-header">
+          <p className="octo-eyebrow">What Octochangelog does</p>
+          <h2>Everything that makes release reviews easier, with the Rails pieces underneath.</h2>
+        </div>
+
+        <div className="octo-feature-grid">
+          {FEATURES.map((feature) => (
+            <article className="octo-feature-card" key={feature.title}>
+              <span className={`octo-feature-icon octo-feature-icon--${feature.icon}`} aria-hidden="true" />
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
             </article>
-            <article className="octo-stat-card">
-              <span>Distinct repos explored</span>
-              <strong>{statFormatter.format(distinctRepositories)}</strong>
-            </article>
-            <article className="octo-stat-card">
-              <span>Client-side workload</span>
-              <strong>Filters only</strong>
-            </article>
-            <article className="octo-stat-card">
-              <span>Heavy markdown parsing</span>
-              <strong>Server-only</strong>
-            </article>
-          </div>
+          ))}
         </div>
       </section>
 
       <section className="octo-section">
         <div className="octo-section-header">
-          <p className="octo-eyebrow">Why this project fits</p>
-          <h2>The migration exercises the exact boundaries React on Rails Pro should dominate.</h2>
-        </div>
-
-        <div className="octo-card-grid">
-          <article className="octo-card">
-            <h3>Rails owns the integration edges</h3>
-            <p>
-              GitHub OAuth, caching, routing, and history persistence all live in Rails where secrets
-              and sessions belong.
-            </p>
-          </article>
-          <article className="octo-card">
-            <h3>RSC owns the expensive presentation tier</h3>
-            <p>
-              Release parsing, section grouping, markdown rendering, syntax highlighting, and result
-              summaries stay on the server and never inflate the browser bundle.
-            </p>
-          </article>
-          <article className="octo-card">
-            <h3>Client React stays purposeful</h3>
-            <p>
-              The browser only hydrates the repository search, version selectors, and auth controls,
-              which is a much cleaner client/server split than the original TanStack app.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section className="octo-section">
-        <div className="octo-section-header">
-          <p className="octo-eyebrow">Featured runs</p>
-          <h2>Launch a comparison that shows the system doing real work.</h2>
+          <p className="octo-eyebrow">Try a real comparison</p>
+          <h2>Start with examples that exercise grouped release notes.</h2>
         </div>
 
         <div className="octo-card-grid">
@@ -113,7 +120,7 @@ export default function HomePage({
       <section className="octo-section">
         <div className="octo-section-header">
           <p className="octo-eyebrow">Rails-backed activity</p>
-          <h2>Recent comparison runs persist in SQLite to prove the app is more than a static demo.</h2>
+          <h2>Recent comparisons are persisted by Rails.</h2>
         </div>
 
         <div className="octo-history-card">

@@ -70,7 +70,36 @@ jobs:
       - name: Build packs
         run: bin/shakapacker
 
-      - name: Run tests
+      - name: Run tests with React on Rails renderer
         env:
           RAILS_ENV: test
-        run: bin/rails test
+          REACT_RENDERER_URL: http://127.0.0.1:3800
+          RENDERER_HOST: 127.0.0.1
+          RENDERER_PORT: 3800
+          RENDERER_WORKERS_COUNT: 1
+        run: |
+          node client/node-renderer.js > /tmp/node-renderer.log 2>&1 &
+          renderer_pid=$!
+
+          cleanup() {
+            kill "$renderer_pid" 2>/dev/null || true
+            wait "$renderer_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          for attempt in {1..30}; do
+            if ruby -rsocket -e 'TCPSocket.new("127.0.0.1", 3800).close' 2>/dev/null; then
+              bin/rails test
+              exit $?
+            fi
+
+            sleep 1
+          done
+
+          if [ -f /tmp/node-renderer.log ]; then
+            echo "::error::Renderer failed to start within 30 seconds. Log output:"
+            cat /tmp/node-renderer.log
+          else
+            echo "::error::Renderer failed to start and produced no log file."
+          fi
+          exit 1

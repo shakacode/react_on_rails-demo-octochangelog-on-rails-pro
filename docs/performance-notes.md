@@ -50,10 +50,10 @@ Notes:
 
 ## Asset Snapshot
 
-- `public/packs/js/generated/CompareFiltersStandalone.js`: `1,918` bytes
-- `public/packs/js/client0.js`: `22,012` bytes
-- `public/packs/js/generated/OctochangelogCompareResultsPage.js`: `1,643` bytes
-- `public/packs/css/application.css`: `13,648` bytes
+- `public/packs/js/generated/CompareFiltersStandalone.js`: about `5 KiB`
+- `public/packs/js/client0.js`: about `22 KiB`
+- `public/packs/js/generated/OctochangelogCompareResultsPage.js`: about `2 KiB`
+- `public/packs/css/application.css`: about `16 KiB`
 
 ## What These Numbers Mean
 
