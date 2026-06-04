@@ -83,6 +83,9 @@ bin/rails react_on_rails:generate_packs
 bin/shakapacker
 ```
 
+`bin/setup` also runs `bin/rails db:seed`, which creates canonical comparison history for the
+homepage. Re-run `bin/rails db:seed` any time you want to restore those demo records.
+
 Run the app in two terminals:
 
 ```bash
@@ -111,7 +114,8 @@ Without them, the app still works against public GitHub data.
 bin/dev
 bin/shakapacker
 bin/rails react_on_rails:generate_packs
-script/benchmark_demo.sh
+bin/benchmark-demo
+BENCHMARK_OUTPUT=markdown bin/benchmark-demo
 bin/rubocop
 bin/brakeman --no-pager
 bin/bundler-audit
@@ -230,7 +234,7 @@ Interpretation:
 - the interactive island stays small
 - the heavy release-note processing remains on the server instead of inflating browser JavaScript
 
-See [Performance Notes](docs/performance-notes.md) for methodology and rerun commands via `script/benchmark_demo.sh`.
+See [Performance Notes](docs/performance-notes.md) for methodology and rerun commands via `bin/benchmark-demo`.
 
 ## Comparison with the Original Octochangelog Shape
 
@@ -250,13 +254,14 @@ The important difference is ownership: Rails remains the request orchestrator an
 
 - [`shakacode/gumroad-rsc`](https://github.com/shakacode/gumroad-rsc) is a broader product-code experiment inside an existing application. This repo is the cleaner showcase-migration story: smaller setup, faster to explain, and easier to demo live.
 - [`shakacode/react_on_rails-hacker-news-app`](https://github.com/shakacode/react_on_rails-hacker-news-app) proves a multi-route content app with feeds, item pages, nested comments, and Rails-managed caching. This repo proves a different page shape: external API fetches, a very small client island, and heavy server-side rendering on one obviously RSC-friendly surface.
-- Together, the three repos cover distinct proof points: product experiment, content app, and focused showcase migration.
+- [`shakacode/react_on_rails-demo-atomic-crm`](docs/next-demo-roadmap.md) is the recommended next portfolio demo when the audience wants an internal SaaS, linked-record, or backoffice workflow story.
+- Together, these repos cover distinct proof points: product experiment, content app, focused showcase migration, and the next internal-tool demo shape.
 
 ## Verification
 
 Verified locally:
 
-- `script/benchmark_demo.sh`
+- `bin/benchmark-demo`
 - `bin/shakapacker`
 - `bin/rubocop`
 - `bin/brakeman --no-pager`

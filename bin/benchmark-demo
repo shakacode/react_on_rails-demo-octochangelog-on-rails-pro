@@ -1,0 +1,182 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+require "time"
+
+ASSET_PATHS = [
+  "public/packs/js/generated/CompareFiltersStandalone.js",
+  "public/packs/js/client0.js",
+  "public/packs/js/generated/OctochangelogCompareResultsPage.js",
+  "public/packs/css/application.css"
+].freeze
+
+BASE_URL = ENV.fetch("BENCHMARK_BASE_URL", "http://127.0.0.1:3000")
+COMPARE_PATH = ENV.fetch("BENCHMARK_COMPARE_PATH", "/compare?repo=octokit/rest.js&from=22.0.0&to=latest")
+OUTPUT = ENV.fetch("BENCHMARK_OUTPUT", "text")
+SKIP_COMPARE = ENV["BENCHMARK_SKIP_COMPARE"] == "1"
+VALID_OUTPUTS = %w[text json markdown].freeze
+
+abort "BENCHMARK_OUTPUT must be one of: #{VALID_OUTPUTS.join(', ')}." unless VALID_OUTPUTS.include?(OUTPUT)
+
+def positive_integer_env(name, default)
+  value = Integer(ENV.fetch(name, default))
+  return value if value.positive?
+
+  abort "#{name} must be greater than 0."
+rescue ArgumentError
+  abort "#{name} must be an integer greater than 0."
+end
+
+HOME_RUNS = positive_integer_env("BENCHMARK_HOME_RUNS", "5")
+COMPARE_RUNS = positive_integer_env("BENCHMARK_COMPARE_RUNS", "3") unless SKIP_COMPARE
+
+def build_url(path)
+  return path if path.start_with?("http://", "https://")
+
+  base = BASE_URL.sub(%r{/*$}, "")
+  normalized_path = path.start_with?("/") ? path : "/#{path}"
+
+  "#{base}#{normalized_path}"
+end
+
+def capture_sample(url)
+  stdout, stderr, status = Open3.capture3(
+    "curl",
+    "-sS",
+    "-o",
+    "/dev/null",
+    "-w",
+    "%{http_code} %{time_starttransfer} %{time_total}",
+    url
+  )
+
+  raise "curl failed for #{url}: #{stderr.strip}" unless status.success?
+
+  http_code, time_starttransfer, time_total = stdout.strip.split
+
+  {
+    http_code: http_code.to_i,
+    time_starttransfer: time_starttransfer.to_f,
+    time_total: time_total.to_f
+  }
+end
+
+def benchmark_route(label:, path:, runs:)
+  url = build_url(path)
+  samples = runs.times.map { capture_sample(url) }
+
+  {
+    label:,
+    path:,
+    url:,
+    runs:,
+    http_codes: samples.map { |sample| sample.fetch(:http_code) }.uniq.sort,
+    time_starttransfer: summarize(samples, :time_starttransfer),
+    time_total: summarize(samples, :time_total)
+  }
+end
+
+def summarize(samples, key)
+  values = samples.map { |sample| sample.fetch(key) }
+
+  {
+    min: values.min,
+    avg: values.sum / values.length,
+    max: values.max
+  }
+end
+
+def asset_snapshot
+  ASSET_PATHS.map do |path|
+    {
+      path:,
+      bytes: File.exist?(path) ? File.size(path) : nil
+    }
+  end
+end
+
+def milliseconds(seconds)
+  "#{(seconds * 1000).round} ms"
+end
+
+def markdown_summary(summary)
+  [
+    milliseconds(summary.fetch(:min)),
+    milliseconds(summary.fetch(:avg)),
+    milliseconds(summary.fetch(:max))
+  ].join(" / ")
+end
+
+report = {
+  generated_at: Time.now.iso8601,
+  base_url: BASE_URL,
+  routes: [benchmark_route(label: "home", path: "/", runs: HOME_RUNS)],
+  assets: asset_snapshot
+}
+
+unless SKIP_COMPARE
+  report[:routes] << benchmark_route(label: "compare", path: COMPARE_PATH, runs: COMPARE_RUNS)
+end
+
+if OUTPUT == "json"
+  puts JSON.pretty_generate(report)
+  exit 0
+end
+
+if OUTPUT == "markdown"
+  puts "## Benchmark Snapshot"
+  puts
+  puts "- Base URL: `#{report.fetch(:base_url)}`"
+  puts "- Generated at: `#{report.fetch(:generated_at)}`"
+  puts
+  puts "| Route | Runs | HTTP codes | Start transfer min / avg / max | Total min / avg / max |"
+  puts "| --- | ---: | --- | --- | --- |"
+  report.fetch(:routes).each do |route|
+    row = [
+      "`#{route.fetch(:path)}`",
+      route.fetch(:runs),
+      "`#{route.fetch(:http_codes).join(', ')}`",
+      markdown_summary(route.fetch(:time_starttransfer)),
+      markdown_summary(route.fetch(:time_total))
+    ]
+    puts "| #{row.join(' | ')} |"
+  end
+  puts
+  puts "| Asset | Bytes |"
+  puts "| --- | ---: |"
+  report.fetch(:assets).each do |asset|
+    size_label = asset.fetch(:bytes)&.to_s || "missing"
+    puts "| `#{asset.fetch(:path)}` | #{size_label} |"
+  end
+  exit 0
+end
+
+puts "Benchmark base URL: #{report.fetch(:base_url)}"
+puts "Generated at: #{report.fetch(:generated_at)}"
+puts
+
+report.fetch(:routes).each do |route|
+  puts "#{route.fetch(:label)} #{route.fetch(:path)}"
+  puts "  HTTP codes: #{route.fetch(:http_codes).join(', ')}"
+  puts format(
+    "  start transfer (s): min %.3f avg %.3f max %.3f",
+    route.dig(:time_starttransfer, :min),
+    route.dig(:time_starttransfer, :avg),
+    route.dig(:time_starttransfer, :max)
+  )
+  puts format(
+    "  total (s):          min %.3f avg %.3f max %.3f",
+    route.dig(:time_total, :min),
+    route.dig(:time_total, :avg),
+    route.dig(:time_total, :max)
+  )
+  puts
+end
+
+puts "Asset sizes"
+report.fetch(:assets).each do |asset|
+  size_label = asset.fetch(:bytes)&.to_s || "missing"
+  puts "  #{asset.fetch(:path)}: #{size_label}"
+end
