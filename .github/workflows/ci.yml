@@ -70,18 +70,27 @@ jobs:
       - name: Build packs
         run: bin/shakapacker
 
-      - name: Start React on Rails renderer
+      - name: Run tests with React on Rails renderer
         env:
           RAILS_ENV: test
+          REACT_RENDERER_URL: http://127.0.0.1:3800
           RENDERER_HOST: 127.0.0.1
           RENDERER_PORT: 3800
           RENDERER_WORKERS_COUNT: 1
         run: |
           node client/node-renderer.js > /tmp/node-renderer.log 2>&1 &
+          renderer_pid=$!
+
+          cleanup() {
+            kill "$renderer_pid" 2>/dev/null || true
+            wait "$renderer_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
 
           for attempt in {1..30}; do
             if ruby -rsocket -e 'TCPSocket.new("127.0.0.1", 3800).close' 2>/dev/null; then
-              exit 0
+              bin/rails test
+              exit $?
             fi
 
             sleep 1
@@ -94,9 +103,3 @@ jobs:
             echo "::error::Renderer failed to start and produced no log file."
           fi
           exit 1
-
-      - name: Run tests
-        env:
-          RAILS_ENV: test
-          REACT_RENDERER_URL: http://127.0.0.1:3800
-        run: bin/rails test
