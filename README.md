@@ -8,7 +8,7 @@ specific shape that React on Rails Pro handles well:
 
 - Rails owns routes, sessions, OAuth callbacks, persistence, and HTML entrypoints.
 - React Server Components stream the expensive comparison results.
-- Only a thin client island hydrates in the browser for search and version selection.
+- Only a thin prerendered client island hydrates in the browser for search and version selection.
 - Markdown parsing, release grouping, and syntax highlighting stay on the server.
 
 ## See Also
@@ -168,10 +168,10 @@ That keeps routing, sessions, redirects, and response semantics in Rails.
 
 ### 2. The Client Surface Is Explicitly Small
 
-The compare form is mounted separately as a non-prerendered React island:
+The compare form is mounted separately as a prerendered React island:
 
 ```erb
-<%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: false) %>
+<%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: true) %>
 ```
 
 Repository search, release selection, and auth entrypoints hydrate in the browser. The results zone does not.
@@ -180,6 +180,8 @@ Repository search, release selection, and auth entrypoints hydrate in the browse
 
 `CompareResults.tsx` parses markdown, groups changelog sections, applies GitHub-flavored markdown transforms,
 and renders the final grouped release output on the server. Those parsing libraries do not need to ship to the browser.
+The filter island now prerenders its form markup before hydration so Rails integration tests and first paint cover
+the actual comparison controls.
 
 ### 4. Rails Still Owns Stateful Concerns
 
@@ -210,10 +212,10 @@ They are useful as a demo baseline, not as a universal production claim.
 - warmed `/`: ~31-40 ms total on a representative local sample
 - warmed `/compare?repo=octokit/rest.js&from=22.0.0&to=latest`: ~356-431 ms total
 - first compare request after boot or cache miss: ~0.75 s on a representative sample run
-- `public/packs/js/generated/CompareFiltersStandalone.js`: 1,918 bytes
-- `public/packs/js/client0.js`: 22,012 bytes
-- `public/packs/js/generated/OctochangelogCompareResultsPage.js`: 1,643 bytes
-- `public/packs/css/application.css`: 13,648 bytes
+- `public/packs/js/generated/CompareFiltersStandalone.js`: about 5 KiB
+- `public/packs/js/client0.js`: about 22 KiB
+- `public/packs/js/generated/OctochangelogCompareResultsPage.js`: about 2 KiB
+- `public/packs/css/application.css`: about 16 KiB
 
 A production-like Docker smoke test on April 15, 2026 also verified the split-workload runtime shape used by the Control Plane scaffolding:
 

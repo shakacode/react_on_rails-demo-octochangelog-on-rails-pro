@@ -25,12 +25,10 @@ export interface RecentComparisonRun {
 
 export interface HomePageProps {
   comparePath: string;
-  distinctRepositories: number;
   featuredComparisons: FeaturedComparison[];
   recentRuns: RecentComparisonRun[];
   sourceName: string;
   sourceUrl: string;
-  totalComparisons: number;
 }
 
 export interface RepositorySearchResult {

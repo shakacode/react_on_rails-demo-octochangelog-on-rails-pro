@@ -1,3 +1,4 @@
+import { toString as mdastToString } from "mdast-util-to-string";
 import type { RootContent } from "mdast";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import React from "react";
@@ -36,8 +37,8 @@ type ProcessedReleaseGroup = {
   title: string;
 };
 
-function firstTextValue(node: { children?: Array<{ value?: string }> }): string {
-  return node.children?.find((child) => typeof child.value === "string")?.value ?? "";
+function firstTextValue(node: RootContent): string {
+  return mdastToString(node).trim();
 }
 
 function ExternalLink(props: ComponentPropsWithoutRef<"a">) {
@@ -184,11 +185,11 @@ async function processReleaseGroups(
 function EmptyResultsState() {
   return (
     <div className="octo-empty-state octo-empty-state--tall">
-      <p className="octo-eyebrow">Server components waiting</p>
+      <p className="octo-eyebrow">Ready when you are</p>
       <h2>Choose a repository and version window to stream the processed changelog here.</h2>
       <p>
-        The filter form is the only client island on this page. Once you submit, Rails fetches GitHub
-        data and the RSC tree handles markdown grouping, rendering, and section summaries on the server.
+        Rails fetches GitHub data, React Server Components group and render the markdown, and the
+        browser stays focused on the controls.
       </p>
     </div>
   );
@@ -297,7 +298,7 @@ export default async function CompareResults({
     <section className="octo-results-panel">
       <div className="octo-results-overview">
         <div>
-          <p className="octo-eyebrow">Server-rendered comparison</p>
+          <p className="octo-eyebrow">Server-rendered changelog</p>
           <h2>{comparison.repository.fullName}</h2>
           <p className="octo-lead octo-lead--compact">
             Showing grouped release notes between <strong>{from}</strong> and{" "}

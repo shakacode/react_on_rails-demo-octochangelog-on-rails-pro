@@ -1,10 +1,10 @@
 <main class="octo-page octo-page--compare">
   <section class="octo-section-header octo-section-header--page">
     <div>
-      <p class="octo-eyebrow">React Server Components in production clothing</p>
-      <h1>Compare GitHub changelogs with Rails at the edge and RSC in the render path.</h1>
+      <p class="octo-eyebrow">Compare releases</p>
+      <h1>Compare changelogs</h1>
       <p class="octo-lead octo-lead--compact">
-        The form below is a client island. The results panel is a server component tree that renders grouped release notes without shipping parsing libraries to the browser.
+        Choose a repository and version range. Rails streams the grouped release notes through React Server Components while the browser hydrates only the filters.
       </p>
     </div>
 
@@ -21,7 +21,7 @@
 
   <div class="octo-compare-layout">
     <div class="octo-sidebar-column">
-      <%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: false) %>
+      <%= react_component("CompareFiltersStandalone", props: @compare_filters_props, prerender: true) %>
     </div>
 
     <div class="octo-results-column">

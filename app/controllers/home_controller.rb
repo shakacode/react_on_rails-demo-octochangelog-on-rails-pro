@@ -8,12 +8,10 @@ class HomeController < ApplicationController
   def index
     @home_page_props = {
       comparePath: compare_path,
-      distinctRepositories: ComparisonRun.distinct.count(:repository_full_name),
       featuredComparisons: featured_comparisons,
       recentRuns: recent_runs,
       sourceName: "Octochangelog",
-      sourceUrl: "https://github.com/Belco90/octochangelog",
-      totalComparisons: ComparisonRun.count
+      sourceUrl: "https://github.com/Belco90/octochangelog"
     }
 
     stream_view_containing_react_components(template: "home/index")
@@ -23,6 +21,14 @@ class HomeController < ApplicationController
 
   def featured_comparisons
     [
+      {
+        label: "ESLint Testing Library",
+        note: "The original Octochangelog example, useful for checking visual parity with the upstream app.",
+        href: compare_path(repo: "testing-library/eslint-plugin-testing-library", from: "v6.5.0", to: "latest"),
+        repo: "testing-library/eslint-plugin-testing-library",
+        from: "v6.5.0",
+        to: "latest"
+      },
       {
         label: "TanStack Router",
         note: "A library-sized changelog with enough version depth to stress the parser.",
@@ -37,14 +43,6 @@ class HomeController < ApplicationController
         href: compare_path(repo: "vitejs/vite", from: "6.0.0", to: "latest"),
         repo: "vitejs/vite",
         from: "6.0.0",
-        to: "latest"
-      },
-      {
-        label: "React on Rails",
-        note: "A meta demo: compare React on Rails releases inside the React on Rails Pro port.",
-        href: compare_path(repo: "shakacode/react_on_rails", from: "16.0.0", to: "latest"),
-        repo: "shakacode/react_on_rails",
-        from: "16.0.0",
         to: "latest"
       }
     ]
