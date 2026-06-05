@@ -13,7 +13,7 @@ story. The next demos should cover other high-value page and application shapes.
 ## Current Portfolio Shape
 
 - `react_on_rails-demo-octochangelog-on-rails-pro`
-  Public compare/read surface, external API fetches, markdown-heavy server rendering, thin client island.
+  Public compare/read surface, external API fetches, markdown-heavy server rendering, thin client island, and seeded demo history.
 - `react_on_rails-hacker-news-app`
   Multi-route content app, feeds, nested comments, and Rails-managed rendering/caching.
 - `gumroad-rsc`
@@ -36,6 +36,13 @@ story. The next demos should cover other high-value page and application shapes.
 - Why this is the strongest portfolio addition:
   - it adds the backoffice/internal-tool story that the current demo set does not cover well
   - it is much easier to position in buyer conversations than a generic starter or component library
+
+Recommended v1 boundary:
+
+- Rails replaces Supabase as the application shell and stateful backend.
+- RSC owns dashboard, list, show, and activity-timeline composition.
+- Client islands stay focused on the deal board, filters, inline edits, uploads, and import flows.
+- Seeded data should be dense enough to make dashboards, record pages, and the deal board feel like a real internal tool.
 
 ### 2. `react_on_rails-demo-notra`
 

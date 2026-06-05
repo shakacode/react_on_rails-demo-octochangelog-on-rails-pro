@@ -5,6 +5,33 @@
 These notes are for demo positioning and local reproducibility. They include local development timing plus one
 production-like Docker runtime smoke test. They are still not a hosted production benchmark report.
 
+## Benchmark Command
+
+The repo includes `bin/benchmark-demo` so the timing and asset snapshot can be re-run without
+retyping curl loops.
+
+Default usage:
+
+```bash
+bin/benchmark-demo
+```
+
+Useful variants:
+
+```bash
+BENCHMARK_BASE_URL=http://127.0.0.1:3001 bin/benchmark-demo
+BENCHMARK_SKIP_COMPARE=1 bin/benchmark-demo
+BENCHMARK_OUTPUT=json bin/benchmark-demo
+BENCHMARK_OUTPUT=markdown bin/benchmark-demo
+```
+
+Notes:
+
+- the default compare route still depends on live GitHub API latency and rate limits
+- `BENCHMARK_SKIP_COMPARE=1` is useful when you only want the homepage timing plus asset sizes
+- `BENCHMARK_OUTPUT=markdown` emits a docs-ready table for README or PR updates
+- the script reports HTTP status codes so a failed external compare path is visible instead of silently folded into the numbers
+
 ## Test Setup
 
 - Date: April 15, 2026
@@ -80,15 +107,15 @@ stay on the server path rather than becoming mandatory browser payload.
 ```bash
 bundle exec rails s -p 3000
 RENDERER_PORT=3800 node client/node-renderer.js
-script/benchmark_demo.sh
+bin/benchmark-demo
 ```
 
 If you want to target another local host or compare URL:
 
 ```bash
-BASE_URL=http://127.0.0.1:3000 \
-COMPARE_PATH='/compare?repo=TanStack/router&from=1.120.5&to=latest' \
-script/benchmark_demo.sh
+BENCHMARK_BASE_URL=http://127.0.0.1:3000 \
+BENCHMARK_COMPARE_PATH='/compare?repo=TanStack/router&from=1.120.5&to=latest' \
+bin/benchmark-demo
 ```
 
 ## Next Performance Step

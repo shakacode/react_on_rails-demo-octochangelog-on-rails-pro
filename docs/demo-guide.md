@@ -45,11 +45,25 @@ Show why React on Rails Pro is compelling for pages that have:
 - "OAuth, sessions, redirects, persistence, and routing are still just Rails."
 - "This is a better fit for server-heavy pages than pretending every surface needs to become a full SPA."
 
+## Proof Commands Before A Demo
+
+Run these when you want to confirm the repo is still demo-ready before a walkthrough:
+
+```bash
+bin/shakapacker
+BENCHMARK_SKIP_COMPARE=1 bin/benchmark-demo
+RAILS_ENV=test REACT_RENDERER_URL=http://127.0.0.1:3800 bin/rails test
+```
+
+Start the Node renderer on `127.0.0.1:3800` before the Rails test command when testing prerendered
+React components locally.
+
 ## How To Position This Repo Alongside Other ShakaCode Demos
 
 - `gumroad-rsc` is the product-experiment story inside a larger existing app.
 - `react_on_rails-hacker-news-app` is the multi-route content-app story with feeds, comments, and caching.
 - `react_on_rails-demo-octochangelog-on-rails-pro` is the showcase-migration story for a clearly server-heavy page with a tiny client island.
+- `react_on_rails-demo-atomic-crm` is the recommended next portfolio story when the audience wants internal SaaS workflows, linked records, and write-adjacent surfaces.
 - Use this repo when the conversation is about page-shape fit and Rails ownership, not about reproducing a whole app framework.
 
 ## What Not To Overclaim

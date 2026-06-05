@@ -2,17 +2,20 @@
 
 ## Snapshot
 
-As of April 15, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification and green GitHub Actions.
+As of June 4, 2026, this repo is no longer a scaffold. It is a working React on Rails Pro + React Server Components demo with green local verification, green GitHub Actions, and Control Plane review-app coverage.
 
 ## What Is Done
 
 - Rails owns the public routes, compare flow, session state, OAuth callback handling, and persisted comparison history.
 - React on Rails Pro streams the compare results as React Server Components.
+- `react-on-rails-rsc` is pinned to the published `19.0.5-rc.6` release.
 - The compare controls are isolated as a client island instead of hydrating the entire page.
 - GitHub repository search and release lookup are wired through Rails JSON endpoints.
 - Markdown-heavy release notes are parsed and grouped on the server.
+- `Octochangelog::DemoCatalog` owns canonical featured comparisons and seeded demo history.
+- `bin/benchmark-demo` captures route timings and asset-size snapshots in text, JSON, or markdown.
 - The default README, positioning notes, demo notes, and performance notes are in place.
-- GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite successfully.
+- GitHub Actions now installs Ruby and Node, generates packs, builds assets, and runs the Rails test suite with the renderer alive in the same step.
 - The README now includes captured screenshots and a rerunnable local benchmark script.
 - Control Plane deployment scaffolding is now present for review apps, staging, and production promotion.
 - The Control Plane setup includes both the public Rails workload and the internal React on Rails Pro Node renderer workload.
@@ -26,7 +29,7 @@ As of April 15, 2026, this repo is no longer a scaffold. It is a working React o
 
 ## What Is Not Done Yet
 
-- No public hosted deployment URL is configured yet.
+- No permanent public production URL is configured yet.
 - No hosted Control Plane benchmark has been captured yet.
 - No recorded walkthrough or GIF set has been added yet.
 - GitHub OAuth remains optional and depends on local credentials.
