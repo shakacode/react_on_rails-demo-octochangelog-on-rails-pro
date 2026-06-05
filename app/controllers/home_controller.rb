@@ -24,7 +24,7 @@ class HomeController < ApplicationController
   end
 
   def recent_runs
-    ComparisonRun.recent.limit(6).map do |run|
+    ComparisonRun.recent.limit(Octochangelog::DemoCatalog.seed_runs.size).map do |run|
       {
         createdAtLabel: run.created_at.in_time_zone.strftime("%b %-d, %Y · %-l:%M %p"),
         fromVersion: run.from_version,
