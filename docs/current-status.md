@@ -8,7 +8,7 @@ As of June 4, 2026, this repo is no longer a scaffold. It is a working React on 
 
 - Rails owns the public routes, compare flow, session state, OAuth callback handling, and persisted comparison history.
 - React on Rails Pro streams the compare results as React Server Components.
-- `react-on-rails-rsc` is pinned to the published `19.0.5-rc.6` release.
+- `react-on-rails-rsc` is pinned to the published `19.0.5-rc.7` release.
 - The compare controls are isolated as a client island instead of hydrating the entire page.
 - GitHub repository search and release lookup are wired through Rails JSON endpoints.
 - Markdown-heavy release notes are parsed and grouped on the server.
