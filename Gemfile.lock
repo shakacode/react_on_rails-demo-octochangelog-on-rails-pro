@@ -103,7 +103,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.23.0)
       msgpack (~> 1.2)
-    brakeman (8.0.4)
+    brakeman (8.0.5)
       racc
     builder (3.3.0)
     bundler-audit (0.9.3)
@@ -311,14 +311,14 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    react_on_rails (17.0.0.rc.2)
+    react_on_rails (17.0.0.rc.3)
       addressable
       connection_pool
       execjs (~> 2.5)
       rails (>= 5.2)
       rainbow (~> 3.0)
       shakapacker (>= 6.0)
-    react_on_rails_pro (17.0.0.rc.2)
+    react_on_rails_pro (17.0.0.rc.3)
       addressable
       async (>= 2.29)
       async-http (~> 0.95)
@@ -326,7 +326,7 @@ GEM
       io-endpoint (~> 0.17.0)
       jwt (>= 2.5, < 4)
       rainbow
-      react_on_rails (= 17.0.0.rc.2)
+      react_on_rails (= 17.0.0.rc.3)
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -461,8 +461,8 @@ DEPENDENCIES
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.3)
-  react_on_rails (= 17.0.0.rc.2)
-  react_on_rails_pro (= 17.0.0.rc.2)
+  react_on_rails (= 17.0.0.rc.3)
+  react_on_rails_pro (= 17.0.0.rc.3)
   rubocop-rails-omakase
   selenium-webdriver
   shakapacker (= 10.1.0)
@@ -497,7 +497,7 @@ CHECKSUMS
   bigdecimal (4.1.1) sha256=1c09efab961da45203c8316b0cdaec0ff391dfadb952dd459584b63ebf8054ca
   bindex (0.8.1) sha256=7b1ecc9dc539ed8bccfc8cb4d2732046227b09d6f37582ff12e50a5047ceb17e
   bootsnap (1.23.0) sha256=c1254f458d58558b58be0f8eb8f6eec2821456785b7cdd1e16248e2020d3f214
-  brakeman (8.0.4) sha256=7bf921fa9638544835df9aa7b3e720a9a72c0267f34f92135955edd80d4dcf6f
+  brakeman (8.0.5) sha256=03735f9690d3fd4b32d66aacbf0a6d15a84266bdd06b32c05c8ecc8f6021d2be
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   bundler-audit (0.9.3) sha256=81c8766c71e47d0d28a0f98c7eed028539f21a6ea3cd8f685eb6f42333c9b4e9
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
@@ -594,8 +594,8 @@ CHECKSUMS
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.4.1) sha256=b4e81bd6a748308a6799619d824ec6a23cd1acd07d9ec41e5f2ebfb2294447c8
   rdoc (7.2.0) sha256=8650f76cd4009c3b54955eb5d7e3a075c60a57276766ebf36f9085e8c9f23192
-  react_on_rails (17.0.0.rc.2) sha256=4ab16401e76e6147fefd1b2f4d514d96558662f21460c2ca9fb5b1622fe91604
-  react_on_rails_pro (17.0.0.rc.2) sha256=8c0e3a9639ce28566a97e6224ba57ff676fbd101262c6396fd449c8b52beadf8
+  react_on_rails (17.0.0.rc.3) sha256=c5efcda8c2f66a151be144726fa4aa2b9bf8d06ce489101df7607453f4582ad6
+  react_on_rails_pro (17.0.0.rc.3) sha256=e3a9a604cbf4e9f5bb78b7c28c6fb644941aae007abc7bbac93f8b6f6ba302d0
   regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
