@@ -29,6 +29,18 @@ spec:
       value: cpln://secret/{{APP_SECRETS}}.RENDERER_PASSWORD
     - name: REACT_ON_RAILS_PRO_LICENSE
       value: cpln://secret/{{APP_SECRETS}}.REACT_ON_RAILS_PRO_LICENSE
+    # Shared Postgres connection URLs (primary + Solid cache/queue/cable), one per
+    # database in config/database.yml. Rails merges each <NAME>_DATABASE_URL onto
+    # the matching connection. Like the secrets above, review apps share the
+    # staging store, so they connect to the staging databases.
+    - name: DATABASE_URL
+      value: cpln://secret/{{APP_SECRETS}}.DATABASE_URL
+    - name: CACHE_DATABASE_URL
+      value: cpln://secret/{{APP_SECRETS}}.CACHE_DATABASE_URL
+    - name: QUEUE_DATABASE_URL
+      value: cpln://secret/{{APP_SECRETS}}.QUEUE_DATABASE_URL
+    - name: CABLE_DATABASE_URL
+      value: cpln://secret/{{APP_SECRETS}}.CABLE_DATABASE_URL
     #
     # Optional encrypted credentials:
     # - name: RAILS_MASTER_KEY

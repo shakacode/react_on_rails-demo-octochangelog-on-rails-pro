@@ -8,18 +8,20 @@ This repo includes `cpflow` 5.1.1 scaffolding for:
 
 ## Why This Shape
 
-This app already ships a production Dockerfile at the repository root and stores
-production SQLite, Solid Cache, Solid Queue, Action Cable, and Thruster state
-under `/rails/storage`.
+This app ships a production Dockerfile at the repository root. It is **stateless**:
+the primary database and Solid Cache, Solid Queue, and Action Cable all live on
+the org's shared Postgres (GVC `staging-shared-postgres`), so the `rails`
+workload mounts no persistent volume and can scale to zero.
 
-The Control Plane setup mirrors that:
+The Control Plane setup:
 
 - `.controlplane/controlplane.yml` points `dockerfile: ../Dockerfile`
-- `templates/storage.yml` creates a persistent volume for `/rails/storage`
-- `templates/rails.yml` runs the public `rails` workload on port `80`
-- `templates/rails.yml` sets `securityOptions.filesystemGroupId: 1000` so the non-root Rails user can write to the mounted SQLite volume
+- `templates/rails.yml` runs the public `rails` workload on port `80` as a plain
+  `standard` (stateless) workload with no volume
 - `templates/renderer.yml` runs the internal React on Rails Pro Node renderer on port `3800` with the `http2` protocol expected by the Pro renderer
-- `bin/docker-entrypoint` runs `bin/rails db:prepare` when the Rails server starts on the mounted `/rails/storage` volume
+- `templates/app.yml` injects the shared-Postgres connection URLs (`DATABASE_URL`
+  and `CACHE_/QUEUE_/CABLE_DATABASE_URL`) from the app secret store
+- `bin/docker-entrypoint` runs `bin/rails db:prepare` against Postgres when the Rails server starts
 
 Because this demo uses Shakapacker plus the React on Rails Pro Node renderer, the root `Dockerfile` now installs Node.js and runs `npm ci` so the same image can both precompile assets and serve renderer requests in Control Plane.
 The renderer is also configured to bind `0.0.0.0` in production so the separate `rails` workload can reach it over the shared Control Plane network.
@@ -37,6 +39,7 @@ Each store must include at least:
 - `SECRET_KEY_BASE`
 - `RENDERER_PASSWORD`
 - `REACT_ON_RAILS_PRO_LICENSE`
+- `DATABASE_URL`, `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, `CABLE_DATABASE_URL` — shared-Postgres connection strings, one per database in `config/database.yml`
 
 Optional:
 
