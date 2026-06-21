@@ -103,7 +103,7 @@ jobs:
 
           for attempt in {1..30}; do
             if ruby -rsocket -e 'TCPSocket.new("127.0.0.1", 3800).close' 2>/dev/null; then
-              bin/rails test
+              bin/rails db:test:prepare test
               exit $?
             fi
 
