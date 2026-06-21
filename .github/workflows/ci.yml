@@ -40,9 +40,24 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # Pin to the shared Postgres major version used in production (PG 15).
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432
+
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips libpq-dev
 
       - name: Checkout code
         uses: actions/checkout@v6
@@ -89,7 +104,7 @@ jobs:
 
           for attempt in {1..30}; do
             if ruby -rsocket -e 'TCPSocket.new("127.0.0.1", 3800).close' 2>/dev/null; then
-              bin/rails test
+              bin/rails db:test:prepare test
               exit $?
             fi
 

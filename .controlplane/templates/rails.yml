@@ -1,7 +1,7 @@
 kind: workload
 name: rails
 spec:
-  type: stateful
+  type: standard
   containers:
     - name: rails
       cpu: 500m
@@ -11,10 +11,6 @@ spec:
       ports:
         - number: 80
           protocol: http
-      volumes:
-        - path: /rails/storage
-          recoveryPolicy: retain
-          uri: cpln://volumeset/rails-storage
   defaultOptions:
     autoscaling:
       minScale: 1

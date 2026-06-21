@@ -1,40 +1,58 @@
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
+# PostgreSQL. Versions 9.3 and up are supported.
 #
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
+# Install the pg driver:
+#   gem install pg
+# On macOS with Homebrew:
+#   gem install pg -- --with-pg-config=/opt/homebrew/bin/pg_config
+#
+# Configure Using Gemfile
+#   gem "pg"
 #
 default: &default
-  adapter: sqlite3
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
 
 development:
   <<: *default
-  database: storage/development.sqlite3
+  database: octochangelog_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: storage/test.sqlite3
+  database: octochangelog_test
 
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
+# Production runs on the org's shared Postgres. Each connection's host,
+# credentials, and database are supplied at runtime via the matching
+# environment variable, which Rails merges on top of the values below:
+#
+#   primary -> DATABASE_URL
+#   cache   -> CACHE_DATABASE_URL
+#   queue   -> QUEUE_DATABASE_URL
+#   cable   -> CABLE_DATABASE_URL
+#
+# These come from the app's Control Plane secret store
+# (`octochangelog-on-rails-pro-<env>-secrets`), referenced via {{APP_SECRETS}} in
+# `.controlplane/templates/app.yml`.
 production:
-  primary:
+  primary: &primary_production
     <<: *default
-    database: storage/production.sqlite3
+    database: octochangelog_production
+    username: octochangelog
+    password: <%= ENV["OCTOCHANGELOG_DATABASE_PASSWORD"] %>
   cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
+    <<: *primary_production
+    database: octochangelog_production_cache
     migrations_paths: db/cache_migrate
   queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
+    <<: *primary_production
+    database: octochangelog_production_queue
     migrations_paths: db/queue_migrate
   cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
+    <<: *primary_production
+    database: octochangelog_production_cable
     migrations_paths: db/cable_migrate
