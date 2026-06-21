@@ -43,7 +43,8 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        # Pin to the shared Postgres major version used in production (PG 15).
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

@@ -35,8 +35,8 @@ test:
 #   queue   -> QUEUE_DATABASE_URL
 #   cable   -> CABLE_DATABASE_URL
 #
-# These are stored in the Control Plane secret
-# `octochangelog-on-rails-pro-staging-database` and referenced from
+# These come from the app's Control Plane secret store
+# (`octochangelog-on-rails-pro-<env>-secrets`), referenced via {{APP_SECRETS}} in
 # `.controlplane/templates/app.yml`.
 production:
   primary: &primary_production

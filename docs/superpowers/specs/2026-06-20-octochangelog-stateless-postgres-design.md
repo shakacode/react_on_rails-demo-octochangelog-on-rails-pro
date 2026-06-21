@@ -42,10 +42,13 @@ Established org convention (verified against live Control Plane + the HN repo):
   `postgres.staging-shared-postgres.cpln.local:5432`:
   `<app>_production`, `<app>_production_cache`, `<app>_production_queue`,
   `<app>_production_cable`.
-- The four connection URLs are stored in a Control Plane secret
-  `<gvc>-database` and exposed to the workload as `DATABASE_URL`,
-  `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, `CABLE_DATABASE_URL`
-  (Rails maps `<NAME>_DATABASE_URL` onto the matching `database.yml` connection).
+- The four connection URLs are exposed to the workload as `DATABASE_URL`,
+  `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, `CABLE_DATABASE_URL` (Rails maps
+  `<NAME>_DATABASE_URL` onto the matching `database.yml` connection). The HN demo
+  keeps these in a dedicated `<gvc>-database` secret; for octochangelog they live
+  in the app's existing `{{APP_SECRETS}}` store (`...-secrets`), so staging and
+  its review apps share the staging databases (a documented trade-off — see
+  "Risks").
 - Routine staging deploys run `cpflow deploy-image` (image-only) — they do **not**
   re-apply templates or revert imperative scaling changes, so the serverless
   conversion persists across deploys.
@@ -80,8 +83,9 @@ locally; RuboCop clean.
 1. On `staging-shared-postgres` (as admin): create role `octochangelog` and its
    four databases (grant `CREATEDB` to the role so `db:prepare` can manage them,
    or pre-create + run an explicit `db:schema:load` for the Solid DBs).
-2. Create Control Plane secret `octochangelog-on-rails-pro-staging-database` with
-   the four URLs; wire the env into the GVC.
+2. Add the four URL keys to the app secret store
+   `octochangelog-on-rails-pro-staging-secrets` (merge-patch, preserving existing
+   keys); add the four `cpln://secret/{{APP_SECRETS}}.*` env refs to the GVC.
 3. Build + deploy the new image (with `pg`); run `db:prepare` + `db:seed`
    against Postgres; verify the homepage shows seeded comparison runs.
 4. Recreate the `rails` workload as `standard` with **no volume** (Control Plane
@@ -119,3 +123,9 @@ locally; RuboCop clean.
   `db:seed` runs against the (empty) primary so the homepage has demo runs.
 - **Shared Postgres is shared:** provisioning only *adds* the `octochangelog`
   role + databases; never touch other demos' data or the server config.
+- **Review apps share the staging databases** (they use the staging
+  `{{APP_SECRETS}}` store). Today review apps get isolated SQLite volumes; this
+  change trades that for shared staging Postgres. The fleet's HN demo instead
+  provisions per-review-app databases (`<app-name>` + suffixes). Matching that —
+  per-review-app DB provisioning in the review-app workflow — is a follow-up,
+  out of scope for #19 (staging scale-to-zero).
