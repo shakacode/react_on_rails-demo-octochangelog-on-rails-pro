@@ -19,6 +19,7 @@
     "react-on-rails-pro": "17.0.0-rc.6",
     "react-on-rails-pro-node-renderer": "17.0.0-rc.6",
     "react-on-rails-rsc": "19.2.0-rc.3",
+    "react-server-dom-webpack": "19.2.7",
     "rehype-highlight": "^7.0.2",
     "rehype-react": "^8.0.0",
     "remark-gfm": "^4.0.1",
