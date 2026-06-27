@@ -18,6 +18,8 @@ If you are starting greenfield, see the
 This demo shows the migration path into the same Rails, React on Rails Pro,
 React 19, RSC, and TanStack-oriented stack.
 
+For the client-side TanStack Query patterns this migration relies on (CSRF fetch, query keys, first-paint seeding, mutations), see [Using TanStack Query](https://reactonrails.com/docs/building-features/tanstack-query).
+
 ## What This Repo Proves
 
 This demo is useful when you want to show that React on Rails Pro can:
