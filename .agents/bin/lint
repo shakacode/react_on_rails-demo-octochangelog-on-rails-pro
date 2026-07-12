@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Managed by shakacode/agent-workflows binstub contract.
+# Run the repository's Ruby lint and format check.
+set -euo pipefail
+cd "$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+exec bin/rubocop "$@"
