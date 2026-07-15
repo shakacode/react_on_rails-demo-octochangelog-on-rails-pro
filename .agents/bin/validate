@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Managed by shakacode/agent-workflows binstub contract.
+# Run the comprehensive local pre-push gate.
+set -euo pipefail
+root="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+cd "$root"
+"$root/.agents/bin/lint"
+"$root/.agents/bin/test"

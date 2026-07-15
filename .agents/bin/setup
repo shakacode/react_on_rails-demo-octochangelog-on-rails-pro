@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Managed by shakacode/agent-workflows binstub contract.
+# Install dependencies and prepare the development database without starting the server.
+set -euo pipefail
+cd "$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+exec bin/setup --skip-server "$@"
