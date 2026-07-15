@@ -9,7 +9,7 @@ means that capability is n/a here.
 | --- | --- | --- |
 | `setup` | Install dependencies | `bin/setup --skip-server` |
 | `validate` | Pre-push gate | `.agents/bin/lint` + `.agents/bin/test` |
-| `test` | Run tests | `bin/rails test "$@"` |
+| `test` | Run CI-equivalent tests | prepares the database and packs, starts and waits for the Node renderer, then runs `bin/rails db:test:prepare test "$@"` |
 | `lint` | Lint / format | `bin/rubocop "$@"` |
 | `build` | Build / type-check | n/a |
 | `docs` | Documentation checks | n/a |

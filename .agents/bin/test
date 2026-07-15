@@ -1,6 +1,48 @@
 #!/usr/bin/env bash
 # Managed by shakacode/agent-workflows binstub contract.
-# Run the Rails test suite.
+# Run the CI-equivalent Rails test suite with its Node renderer.
 set -euo pipefail
 cd "$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
-exec bin/rails test "$@"
+
+renderer_log="$(mktemp "${TMPDIR:-/tmp}/octochangelog-node-renderer.XXXXXX.log")"
+renderer_pid=""
+
+cleanup() {
+  if [ -n "$renderer_pid" ]; then
+    kill "$renderer_pid" 2>/dev/null || true
+    wait "$renderer_pid" 2>/dev/null || true
+  fi
+  rm -f "$renderer_log"
+}
+trap cleanup EXIT INT TERM
+
+# Keep this preparation in the same order as the GitHub Actions test job.
+bin/rails db:prepare
+bin/rails react_on_rails:generate_packs
+bin/shakapacker
+
+RAILS_ENV=test \
+  REACT_RENDERER_URL=http://127.0.0.1:3800 \
+  RENDERER_HOST=127.0.0.1 \
+  RENDERER_PORT=3800 \
+  RENDERER_WORKERS_COUNT=1 \
+  node client/node-renderer.js >"$renderer_log" 2>&1 &
+renderer_pid=$!
+
+for attempt in {1..30}; do
+  if ruby -rsocket -e 'TCPSocket.new("127.0.0.1", 3800).close' 2>/dev/null; then
+    RAILS_ENV=test \
+      REACT_RENDERER_URL=http://127.0.0.1:3800 \
+      RENDERER_HOST=127.0.0.1 \
+      RENDERER_PORT=3800 \
+      RENDERER_WORKERS_COUNT=1 \
+      bin/rails db:test:prepare test "$@"
+    exit $?
+  fi
+
+  sleep 1
+done
+
+echo "Renderer failed to start within 30 seconds. Log output:" >&2
+cat "$renderer_log" >&2
+exit 1
