@@ -30,7 +30,29 @@ jobs:
        github.event.issue.pull_request &&
        contains(fromJson('["+review-app-deploy","+review-app-deploy\n","+review-app-deploy\r\n"]'), github.event.comment.body) &&
        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-review-app.yml@v5.1.1
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-review-app.yml@11516c50dee00c1bba237ab1a5adce481dac19df # PR #444 exact head
     secrets:
       CPLN_TOKEN_STAGING: ${{ secrets.CPLN_TOKEN_STAGING }}
       DOCKER_BUILD_SSH_KEY: ${{ secrets.DOCKER_BUILD_SSH_KEY }}
+
+  assert-image-built:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      ACTUAL_IMAGE_BUILT: ${{ needs.deploy.outputs.image_built }}
+      EXPECTED_IMAGE_BUILT: "false"
+      EXPECTED_SOURCE_SHA: 11516c50dee00c1bba237ab1a5adce481dac19df
+    steps:
+      - name: Assert image_built output
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf "cpflow_source_sha='%s'\n" "$EXPECTED_SOURCE_SHA"
+          printf "image_built='%s'\n" "$ACTUAL_IMAGE_BUILT"
+
+          if [[ "$ACTUAL_IMAGE_BUILT" != "$EXPECTED_IMAGE_BUILT" ]]; then
+            echo "Expected image_built='$EXPECTED_IMAGE_BUILT', got '$ACTUAL_IMAGE_BUILT'." >&2
+            exit 1
+          fi
