@@ -10,3 +10,5 @@ merge_ledger: "n/a"
 ci_parity_environment: "GitHub Actions `.github/workflows/ci.yml` (ubuntu-latest; scan_ruby, lint, and PostgreSQL/renderer test jobs)"
 hosted_ci_trigger: "n/a — CI runs automatically on every PR; no manual trigger"
 ci_change_detector: "n/a"
+trusted_actions:
+  - shakacode/control-plane-flow

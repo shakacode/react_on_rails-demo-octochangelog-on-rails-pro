@@ -20,6 +20,9 @@ spec:
       value: /rails/tmp/.node-renderer-bundles
     - name: SOLID_QUEUE_IN_PUMA
       value: "true"
+    # Verification-only URL template for control-plane-flow issue #407.
+    - name: app_domain
+      value: "https://verification.example.test/{{APP_NAME}}?alias=$(CPLN_GVC_ALIAS)"
     # Review apps run pull request code. Values mounted through cpln://secret
     # become readable by that code after the workload starts, so review-app
     # secret references must use review/staging-specific values.
