@@ -36,13 +36,14 @@ jobs:
       DOCKER_BUILD_SSH_KEY: ${{ secrets.DOCKER_BUILD_SSH_KEY }}
 
   assert-image-built:
+    if: ${{ always() }}
     needs: deploy
     runs-on: ubuntu-latest
     permissions:
       contents: read
     env:
       ACTUAL_IMAGE_BUILT: ${{ needs.deploy.outputs.image_built }}
-      EXPECTED_IMAGE_BUILT: "false"
+      EXPECTED_IMAGE_BUILT: "true"
       EXPECTED_SOURCE_SHA: 11516c50dee00c1bba237ab1a5adce481dac19df
     steps:
       - name: Assert image_built output
