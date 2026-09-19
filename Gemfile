@@ -40,6 +40,7 @@ group :development, :test do
 
   # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
   gem "bundler-audit", require: false
+  gem "json", ">= 2.21.2", "< 3" # bundler-audit CVE-2026-71847
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
