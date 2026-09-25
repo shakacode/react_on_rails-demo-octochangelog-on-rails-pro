@@ -27,10 +27,11 @@ also pass; document any non-blocking skip. Live branch rules and required approv
 remain authoritative.
 
 At batch closeout, low-risk, portable documentation, workflow text, helper-script,
-and validation-fixture changes may be auto-merged after the full gate passes.
-Keep CI/workflow, build-configuration, dependency or runtime changes, broad
-refactors, and release work maintainer-gated. This policy grants no standing merge
-authority.
+and validation-fixture changes may be auto-merged only when the task's trusted
+merge preference explicitly authorizes it and the full gate passes. Shaka v1 has
+one repository merge preference, so this seam defaults to `ask`. Keep CI/workflow,
+build-configuration, dependency or runtime changes, broad refactors, and release
+work maintainer-gated. This policy grants no standing merge authority.
 
 Prefix follow-up issue titles with `Follow-up:`. Update `CHANGELOG.md` only for
 user-visible features and bug fixes. GitHub Actions runs automatically for every

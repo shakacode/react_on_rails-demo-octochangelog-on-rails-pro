@@ -3,7 +3,8 @@
 version: 1
 base_branch: main
 review:
+  # No named CI review report is required; AGENTS.md defines the full check and thread gate.
   required: none
 merge:
-  preference: auto
+  preference: ask
 repo_prefix: ROROCT
