@@ -17,3 +17,25 @@ report the blocker instead.
 Portable shared skills resolve this repo's commands and policy through:
 - **Commands** — run `.agents/bin/<name>` (`setup`, `validate`, `test`, ...); see `.agents/bin/README.md`. A missing script means that capability is n/a here.
 - **Policy / config** — `.agents/agent-workflow.yml`.
+
+## Review and Merge
+
+AI reviewer results are advisory unless they report a blocker. Before merging,
+require every current-head `gh pr checks` entry to pass, all review threads to be
+resolved, and GitHub to report clean mergeability. The review-app deployment must
+also pass; document any non-blocking skip. Live branch rules and required approvals
+remain authoritative.
+
+At batch closeout, low-risk, portable documentation, workflow text, helper-script,
+and validation-fixture changes may be auto-merged only when the task's trusted
+merge preference explicitly authorizes it and the full gate passes. Shaka v1 has
+one repository merge preference, so this seam defaults to `ask`. Keep CI/workflow,
+build-configuration, dependency or runtime changes, broad refactors, and release
+work maintainer-gated. This policy grants no standing merge authority.
+
+Prefix follow-up issue titles with `Follow-up:`. Update `CHANGELOG.md` only for
+user-visible features and bug fixes. GitHub Actions runs automatically for every
+pull request; this repository has no manual hosted-CI trigger.
+
+The CI parity jobs are `scan_ruby`, `lint`, and `test` from
+`.github/workflows/ci.yml`. The test job uses PostgreSQL 15 and the Node renderer.
