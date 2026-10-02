@@ -7,4 +7,10 @@ review:
   required: none
 merge:
   preference: ask
+  required_checks:
+    - scan_ruby
+    - lint
+    - test
+    - claude-review
+    - deploy / deploy
 repo_prefix: ROROCT
