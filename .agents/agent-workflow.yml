@@ -5,6 +5,12 @@ base_branch: main
 review:
   # No named CI review report is required; AGENTS.md defines the full check and thread gate.
   required: none
+  local_review_count: 2
+  local_review_agents:
+  - provider: anthropic
+    model_family: claude
+  - provider: openai
+    model_family: codex
 merge:
   preference: ask
   required_checks:
