@@ -70,7 +70,7 @@ Octochangelog was the strongest TanStack showcase candidate because it is:
 
 ### Prerequisites
 
-- Ruby `3.4.6`
+- Ruby `3.4.9`
 - Node.js `24`
 - `npm`
 - SQLite 3
