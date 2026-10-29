@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Managed by shakacode/agent-workflows binstub contract.
+# Run the comprehensive local pre-push gate.
+set -euo pipefail
+root=$(env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR -u GIT_PREFIX -u GIT_CEILING_DIRECTORIES git -C "$(dirname -- "$0")" rev-parse --show-toplevel) || exit $?
+cd "$root"
+"$root/.agents/bin/lint"
+"$root/.agents/shaka/bin/test"
