@@ -15,4 +15,4 @@ means that capability is n/a here.
 | `docs` | Documentation checks | n/a |
 | `ci-detect` | Detect affected CI jobs | n/a |
 
-Non-command policy lives in [`../agent-workflow.yml`](../agent-workflow.yml).
+Non-command policy lives in [`../shaka/config.yml`](../shaka/config.yml).
